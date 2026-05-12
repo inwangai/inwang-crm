@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ACURATE CRM — INWANG AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --void:#020408;--navy:#071428;--panel:#0a1929;--card:#0d2137;
+  --gold:#c8a84b;--gold2:#e8c96d;--gd:rgba(200,168,75,.1);--gb:rgba(200,168,75,.2);
+  --cyan:#00d4ff;--purple:#7c3aed;--green:#10b981;--red:#ef4444;--orange:#f97316;--pink:#ec4899;
+  --white:#f0f6ff;--muted:#6b7a99;--muted2:#a0b0cc;--border:rgba(255,255,255,.06);
+  --sidebar:230px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--void);color:var(--white);min-height:100vh;display:flex;overflow-x:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(200,168,75,.25);border-radius:100px}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar);min-height:100vh;background:rgba(5,14,30,.98);border-right:1px solid var(--border);position:fixed;left:0;top:0;bottom:0;z-index:300;display:flex;flex-direction:column}
+.sidebar::before{content:'';position:absolute;bottom:-80px;right:-80px;width:220px;height:220px;background:radial-gradient(circle,rgba(200,168,75,.07),transparent 70%);pointer-events:none}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sb-brand{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;letter-spacing:2px;color:var(--gold);display:inline-flex;align-items:baseline;gap:2px;text-decoration:none!important}
+.sb-brand sup{font-size:7px;font-weight:400;color:var(--gold);opacity:0.7;text-decoration:none!important;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:0}
+sup{text-decoration:none!important;border-bottom:none!important}
+.sb-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{opacity:.7;box-shadow:0 0 0 4px rgba(16,185,129,0)}}
+.sb-sub{font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+.sb-nav{padding:14px 10px;flex:1;overflow-y:auto}
+.sb-section{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:0 8px;margin:14px 0 5px;display:flex;align-items:center;gap:6px}
+.sb-section::after{content:'';flex:1;height:1px;background:var(--border)}
+.sb-item{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted2);transition:all .18s;text-decoration:none;margin-bottom:1px;border:1px solid transparent;position:relative}
+.sb-item:hover{background:var(--gd);color:var(--white);border-color:var(--gb)}
+.sb-item.active{background:var(--gd);color:var(--gold);border-color:var(--gb)}
+.sb-item.active::before{content:'';position:absolute;left:0;top:25%;bottom:25%;width:2px;background:var(--gold);border-radius:0 2px 2px 0}
+.sb-ic{font-size:13px;width:17px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;font-size:9px;font-weight:800;padding:1px 6px;border-radius:100px;flex-shrink:0}
+.sb-badge.red{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.sb-badge.green{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+.sb-badge.gold{background:var(--gd);color:var(--gold);border:1px solid var(--gb)}
+.sb-footer{padding:14px 16px;border-top:1px solid var(--border);flex-shrink:0}
+.sb-user{display:flex;align-items:center;gap:10px}
+.sb-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#030810;flex-shrink:0}
+.sb-uname{font-size:11px;font-weight:700;line-height:1.3}
+.sb-urole{font-size:9px;color:var(--muted)}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar);flex:1;min-height:100vh;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+.topbar{position:sticky;top:0;z-index:200;min-height:56px;background:rgba(2,4,8,.97);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;flex-wrap:wrap;gap:8px}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.tb-r{display:flex;align-items:center;gap:10px}
+.search-wrap{display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:0 11px;transition:border-color .2s}
+.search-wrap:focus-within{border-color:var(--gb)}
+.search-wrap input{background:none;border:none;padding:7px 0;font-size:11px;color:var(--white);font-family:inherit;outline:none;width:180px}
+.search-wrap input::placeholder{color:var(--muted)}
+.tb-btn{padding:6px 13px;background:var(--gd);border:1px solid var(--gb);border-radius:6px;font-size:11px;font-weight:700;color:var(--gold);cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+.tb-btn:hover{background:rgba(200,168,75,.2)}
+.tb-date{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap}
+
+/* ── CONTENT ── */
+.content{padding:22px 24px;flex:1;overflow-y:auto;overflow-x:hidden;min-width:0}
+.section-page{display:none}
+.section-page.active{display:block}
+
+/* ── PAGE HEADER ── */
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.ph-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.3px}
+.ph-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.ph-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-primary{padding:8px 16px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#030810;font-weight:800;font-size:11px;border-radius:7px;cursor:pointer;border:none;font-family:inherit}
+.btn-sec{padding:7px 13px;background:var(--panel);border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:600;color:var(--muted2);cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-sec:hover{border-color:var(--gb);color:var(--gold)}
+
+/* ── STAT CARDS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-bottom:18px}
+.sc{background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:14px 13px;position:relative;overflow:hidden;transition:all .2s;cursor:default}
+.sc:hover{border-color:var(--gb);transform:translateY(-1px)}
+.sc::after{content:'';position:absolute;top:0;left:0;right:0;height:1.5px;opacity:0;transition:opacity .2s}
+.sc:hover::after{opacity:1}
+.sc-icon{font-size:16px;margin-bottom:7px;display:block}
+.sc-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1;margin-bottom:3px}
+.sc-label{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}
+.sc-sub{font-size:10px;margin-top:3px;font-weight:600}
+
+/* ── CARD ── */
+.card{background:var(--panel);border:1px solid var(--border);border-radius:13px;overflow:hidden}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;flex-shrink:0}
+.card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
+.card-sub{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:700px}
+thead{background:rgba(0,0,0,.2)}
+th{padding:9px 14px;text-align:left;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:var(--muted2)}
+td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(200,168,75,.025)}
+.tid{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);font-weight:500}
+.tname{font-weight:700;color:var(--white);font-size:12px}
+.tsub{font-size:10px;color:var(--muted);margin-top:1px}
+.ttel{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2)}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:.3px;white-space:nowrap}
+.badge::before{content:'';width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.b-new{background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.2);color:var(--cyan)}.b-new::before{background:var(--cyan)}
+.b-hot{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);color:#fca5a5}.b-hot::before{background:#ef4444}
+.b-warm{background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.2);color:var(--orange)}.b-warm::before{background:var(--orange)}
+.b-done{background:rgba(200,168,75,.07);border:1px solid rgba(200,168,75,.2);color:var(--gold)}.b-done::before{background:var(--gold)}
+.b-paid{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);color:var(--green)}.b-paid::before{background:var(--green)}
+.b-sent{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.2);color:#a78bfa}.b-sent::before{background:#7c3aed}
+.b-dup{background:rgba(239,68,68,.05);border:1px solid rgba(239,68,68,.15);color:#fca5a5}.b-dup::before{background:#ef4444}
+.b-na{background:rgba(107,122,153,.07);border:1px solid rgba(107,122,153,.15);color:var(--muted2)}.b-na::before{background:var(--muted)}
+
+/* ── ACTION BUTTONS ── */
+.actions{display:flex;gap:3px;flex-wrap:wrap}
+.ab{padding:3px 9px;border-radius:5px;font-size:9px;font-weight:700;cursor:pointer;border:1px solid;font-family:inherit;transition:all .15s;white-space:nowrap}
+.ab:hover{opacity:.8}
+.ab-view{background:rgba(0,212,255,.05);border-color:rgba(0,212,255,.2);color:var(--cyan)}
+.ab-report{background:var(--gd);border-color:var(--gb);color:var(--gold)}
+.ab-wa{background:rgba(16,185,129,.05);border-color:rgba(16,185,129,.2);color:var(--green)}
+.ab-assign{background:rgba(124,58,237,.05);border-color:rgba(124,58,237,.2);color:#a78bfa}
+.ab-note{background:rgba(249,115,22,.05);border-color:rgba(249,115,22,.2);color:var(--orange)}
+.ab-pay{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3);color:var(--green)}
+
+/* ── FILTER TABS ── */
+.ftabs{display:flex;gap:3px;background:rgba(0,0,0,.2);border-radius:7px;padding:3px;flex-wrap:wrap}
+.ft{padding:4px 11px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:inherit;transition:all .18s;white-space:nowrap}
+.ft.on{background:var(--gd);color:var(--gold)}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.modal-bg.open{display:flex}
+.modal{background:var(--navy);border:1px solid rgba(200,168,75,.15);border-radius:16px;width:90%;max-width:680px;max-height:88vh;overflow-y:auto;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+.modal-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--navy);z-index:1}
+.modal-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:3px;line-height:1}
+.modal-body{padding:18px 22px}
+.modal-tabs{display:flex;gap:3px;background:rgba(0,0,0,.2);border-radius:7px;padding:3px;margin-bottom:18px}
+.mt{padding:5px 14px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:inherit;transition:all .18s}
+.mt.on{background:var(--gd);color:var(--gold)}
+.mtab-content{display:none}.mtab-content.on{display:block}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.field-row.full{grid-template-columns:1fr}
+.fl{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.fv{font-size:12px;color:var(--white);line-height:1.5}
+.fm{font-size:11px;color:var(--muted2)}
+.ds{margin-bottom:16px}
+.dst{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+
+/* ── SCORE BARS ── */
+.score-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.sn{font-size:10px;color:var(--muted2);width:100px;flex-shrink:0}
+.st{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
+.sf{height:100%;border-radius:100px}
+.sv{font-family:'DM Mono',monospace;font-size:10px;width:26px;text-align:right;flex-shrink:0}
+
+/* ── NOTES TIMELINE ── */
+.note-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.note-item:last-child{border-bottom:none}
+.note-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;background:var(--gold)}
+.note-text{font-size:12px;color:var(--muted2);line-height:1.6}
+.note-meta{font-size:9px;color:var(--muted);margin-top:3px;font-family:'DM Mono',monospace}
+.note-input-wrap{display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.note-input{flex:1;background:var(--card);border:1px solid var(--border);color:var(--white);padding:8px 12px;border-radius:7px;font-size:12px;font-family:inherit;outline:none;resize:none}
+.note-input:focus{border-color:var(--gb)}
+
+/* ── KANBAN ── */
+.kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;min-height:400px}
+.kb-col{background:rgba(0,0,0,.15);border:1px solid var(--border);border-radius:11px;overflow:hidden}
+.kb-head{padding:11px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.kb-title{font-size:11px;font-weight:700}
+.kb-count{font-size:10px;font-weight:700;padding:1px 7px;border-radius:100px;font-family:'DM Mono',monospace}
+.kb-body{padding:8px;min-height:200px}
+.kb-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 11px;margin-bottom:7px;cursor:pointer;transition:all .18s}
+.kb-card:hover{border-color:var(--gb);transform:translateY(-1px)}
+.kb-name{font-size:11px;font-weight:700;margin-bottom:3px}
+.kb-id{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold)}
+.kb-sub{font-size:10px;color:var(--muted);margin-top:3px}
+.kb-meta{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+
+/* ── ANALYTICS ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.chart-card{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:16px}
+.chart-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:14px}
+.chart-wrap{position:relative;height:200px}
+
+/* ── REVENUE ── */
+.rev-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.rev-card{background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:14px;text-align:center}
+.rev-num{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--green);margin-bottom:4px}
+.rev-label{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+
+/* ── CALENDAR ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
+.cal-day-name{font-size:9px;color:var(--muted);text-align:center;font-weight:700;padding:4px}
+.cal-day{min-height:44px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:6px;padding:4px;font-size:9px;cursor:pointer;transition:all .15s}
+.cal-day:hover{border-color:var(--gb);background:var(--gd)}
+.cal-day.has-fu{background:rgba(200,168,75,.08);border-color:var(--gb)}
+.cal-day.today{border-color:var(--cyan);background:rgba(0,212,255,.05)}
+.cal-day-num{font-weight:700;color:var(--muted2);margin-bottom:2px}
+.cal-fu-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin:1px auto}
+
+/* ── NOTIFICATION ── */
+.notif{position:fixed;bottom:22px;right:22px;z-index:2000;background:var(--panel);border:1px solid var(--gb);border-radius:9px;padding:11px 16px;font-size:11px;font-weight:600;color:var(--gold);display:none;box-shadow:0 8px 32px rgba(0,0,0,.5);max-width:320px}
+.notif.show{display:block;animation:fadeUp .3s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── QUICK ACTION INLINE ── */
+.qa-select{background:var(--card);border:1px solid var(--border);color:var(--white);padding:3px 6px;border-radius:5px;font-size:9px;font-family:inherit;cursor:pointer;outline:none}
+.qa-select:focus{border-color:var(--gb)}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:40px;color:var(--muted)}
+.ei{font-size:32px;margin-bottom:10px;opacity:.4}
+.et{font-size:13px;margin-bottom:3px}
+.es{font-size:11px;opacity:.5}
+
+/* ── SPIN ── */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(200,168,75,.15);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ── LOGIN SCREEN ── */
+#login-screen{position:fixed;inset:0;z-index:9999;background:var(--void);display:flex;align-items:center;justify-content:center}
+#login-screen::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(200,168,75,.08),transparent 70%);pointer-events:none}
+.login-box{width:100%;max-width:380px;padding:0 20px;position:relative;z-index:1}
+.login-logo{text-align:center;margin-bottom:32px}
+.login-brand{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:2px;color:var(--gold)}
+.login-brand sup{font-size:10px;color:var(--muted)}
+.login-sub{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
+.login-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px 26px}
+.login-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px}
+.login-desc{font-size:11px;color:var(--muted);margin-bottom:22px}
+.login-field{margin-bottom:14px}
+.login-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:block}
+.login-input{width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:10px 13px;border-radius:8px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+.login-input:focus{border-color:var(--gb)}
+.login-btn{width:100%;padding:11px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#030810;font-weight:800;font-size:13px;border-radius:8px;cursor:pointer;border:none;font-family:inherit;margin-top:6px;transition:opacity .2s}
+.login-btn:hover{opacity:.9}
+.login-error{font-size:11px;color:var(--red);margin-top:8px;text-align:center;min-height:16px}
+.login-hint{font-size:10px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.7}
+.login-footer{text-align:center;margin-top:20px;font-size:10px;color:var(--muted)}
+
+/* ── PROGRESS ── */
+.progress-bar{height:5px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;margin-top:5px}
+.progress-fill{height:100%;border-radius:100px;transition:width .8s}
+
+/* ── COUNSELLOR CHIP ── */
+.cc{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:600;background:rgba(255,255,255,.04);border:1px solid var(--border)}
+
+/* ── HOT SCORE ── */
+.hot-score{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px}
+.hot-high{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}
+.hot-med{background:rgba(249,115,22,.08);color:var(--orange);border:1px solid rgba(249,115,22,.2)}
+.hot-low{background:rgba(107,122,153,.08);color:var(--muted2);border:1px solid rgba(107,122,153,.15)}
+
+/* ── PAGE TABS ── */
+.page-tabs{display:flex;gap:3px;background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:3px;margin-bottom:18px;width:fit-content}
+.pt{padding:6px 16px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:inherit;transition:all .18s}
+.pt.on{background:var(--gd);color:var(--gold);border:1px solid var(--gb)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-brand">INWANG<sup style="font-size:10px;opacity:0.7;text-decoration:none!important">TM</sup></div>
+      <div class="login-sub">CRM · Acurate Multi Services</div>
+    </div>
+    <div class="login-card">
+      <div class="login-title">Sign in to CRM</div>
+      <div class="login-desc">Enter your counsellor credentials to continue</div>
+      <div class="login-field">
+        <label class="login-label">Username</label>
+        <input class="login-input" id="login-user" type="text" placeholder="Your name or username" autocomplete="username">
+      </div>
+      <div class="login-field">
+        <label class="login-label">Password</label>
+        <input class="login-input" id="login-pass" type="password" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="login-error" id="login-err"></div>
+      <button class="login-btn" onclick="doLogin()">Sign In →</button>
+      <div class="login-hint">
+        Demo credentials:<br>
+        <strong style="color:var(--gold)">admin</strong> / <strong style="color:var(--gold)">inwang2026</strong><br>
+        <span style="font-size:9px">Or counsellor name / team@inwang</span>
+      </div>
+    </div>
+    <div class="login-footer">© 2026 INWANG™ · Acurate Multi Services Pvt. Ltd.</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-brand">INWANG<sup>TM</sup></div>
+    <div class="sb-sub">CRM · Acurate Multi Services</div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Main</div>
+    <a class="sb-item active" onclick="nav('dashboard',this)"><span class="sb-ic">📊</span>Dashboard</a>
+    <a class="sb-item" onclick="nav('leads',this)"><span class="sb-ic">👥</span>All Leads <span class="sb-badge red" id="sb-new">0</span></a>
+    <a class="sb-item" onclick="nav('kanban',this)"><span class="sb-ic">🗂</span>Pipeline Kanban</a>
+    <a class="sb-item" onclick="nav('followups',this)"><span class="sb-ic">📅</span>Follow-ups <span class="sb-badge green" id="sb-fu">0</span></a>
+    <div class="sb-section">Analysis</div>
+    <a class="sb-item" onclick="nav('assessment',this)"><span class="sb-ic">🧠</span>Assessments <span class="sb-badge gold" id="sb-ass">0</span></a>
+    <a class="sb-item" onclick="nav('reports',this)"><span class="sb-ic">📄</span>Career Reports</a>
+    <a class="sb-item" onclick="nav('analytics',this)"><span class="sb-ic">📈</span>Analytics</a>
+    <a class="sb-item admin-only" onclick="nav('revenue',this)"><span class="sb-ic">💰</span>Revenue</a>
+    <div class="sb-section">Teams</div>
+    <a class="sb-item" onclick="nav('counsellors',this)"><span class="sb-ic">👤</span>Counsellors</a>
+    <a class="sb-item admin-only" onclick="nav('duplicates',this)"><span class="sb-ic">⚠️</span>Duplicates <span class="sb-badge red" id="sb-dup">0</span></a>
+    <a class="sb-item" onclick="nav('activity',this)"><span class="sb-ic">📋</span>Activity Log</a>
+    <a class="sb-item admin-only" onclick="nav('import',this)"><span class="sb-ic">📥</span>Import Leads</a>
+    <a class="sb-item" onclick="nav('events',this)"><span class="sb-ic">🎓</span>Events / Batches</a>
+    <div class="sb-section">System</div>
+    <a class="sb-item" onclick="syncData()"><span class="sb-ic">🔄</span>Sync Sheets</a>
+    <a class="sb-item" onclick="nav('settings',this)"><span class="sb-ic">⚙️</span>Settings</a>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-user" style="margin-bottom:10px">
+      <div class="sb-av" id="sb-av-init">MM</div>
+      <div style="flex:1">
+        <div class="sb-uname" id="sb-user-name">Mohammad Meraj</div>
+        <div class="sb-urole" id="sb-user-role">Founder · INWANG AI</div>
+      </div>
+    </div>
+    <button onclick="doLogout()" style="width:100%;padding:7px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:7px;color:#fca5a5;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='rgba(239,68,68,.15)'" onmouseout="this.style.background='rgba(239,68,68,.08)'">
+      ⏻ Sign Out
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="tb-l">
+      <span class="tb-title" id="tb-title">Dashboard</span>
+    </div>
+    <div class="tb-r">
+      <button class="tb-btn" onclick="openWA('9470659224','INWANG Support')" style="background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.25);color:var(--green);padding:5px 10px;font-size:10px">💬 WA</button>
+      <div class="search-wrap">
+        <span style="color:var(--muted);font-size:12px">🔍</span>
+        <input type="text" placeholder="Name, ID, mobile, city…" id="gsearch" oninput="globalSearch(this.value)">
+      </div>
+      <span class="tb-date" id="tb-date"></span>
+      <button class="tb-btn" onclick="syncData()">⟳ Refresh</button>
+      <button class="btn-primary" onclick="exportCSV()" style="font-size:10px;padding:6px 12px">⬇ Export</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="section-page active" id="page-dashboard">
+      <div class="ph">
+        <div><div class="ph-title">Live Dashboard</div><div class="ph-sub">ACURATE CRM · INWANG AI Career Intelligence · Real-time overview</div></div>
+        <div class="ph-actions">
+          <button class="btn-sec" onclick="syncData()" style="font-size:11px">🔄 Sync Now</button>
+          <button class="btn-sec" onclick="sendDailySummary()" style="font-size:11px">📊 Daily Summary</button>
+          <button class="btn-primary" onclick="nav('leads',null)" style="font-size:11px">+ New Lead</button>
+        </div>
+      </div>
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="sc" style="--c:var(--white)"><span class="sc-icon">👥</span><div class="sc-num" id="s-total" style="color:var(--white)">—</div><div class="sc-label">Total Leads</div></div>
+        <div class="sc"><span class="sc-icon">🆕</span><div class="sc-num" id="s-new" style="color:var(--cyan)">—</div><div class="sc-label">New</div></div>
+        <div class="sc"><span class="sc-icon">🔥</span><div class="sc-num" id="s-hot" style="color:var(--red)">—</div><div class="sc-label">Hot Leads</div></div>
+        <div class="sc"><span class="sc-icon">🧠</span><div class="sc-num" id="s-ass" style="color:var(--gold)">—</div><div class="sc-label">Assessed</div></div>
+        <div class="sc"><span class="sc-icon">✅</span><div class="sc-num" id="s-paid" style="color:var(--green)">—</div><div class="sc-label">Paid</div></div>
+        <div class="sc"><span class="sc-icon">📅</span><div class="sc-num" id="s-fu-today" style="color:var(--orange)">—</div><div class="sc-label">Follow-ups</div></div>
+        <div class="sc"><span class="sc-icon">⚠️</span><div class="sc-num" id="s-dup" style="color:var(--red)">—</div><div class="sc-label">Duplicates</div></div>
+        <div class="sc"><span class="sc-icon">💰</span><div class="sc-num" id="s-rev" style="color:var(--green)">—</div><div class="sc-label">Revenue</div></div>
+      </div>
+      <!-- CHARTS ROW -->
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">Lead Sources</div><div class="chart-wrap"><canvas id="chart-sources"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Monthly Leads (2026)</div><div class="chart-wrap"><canvas id="chart-monthly"></canvas></div></div>
+      </div>
+      <!-- BOTTOM GRID -->
+      <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:14px">
+        <div class="card">
+          <div class="card-head"><div><div class="card-title">Recent Leads</div><div class="card-sub">Last 8 entries</div></div><button class="btn-sec" onclick="nav('leads',null)" style="font-size:10px;padding:4px 10px">View All →</button></div>
+          <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Student</th><th>Qual</th><th>Status</th><th>Score</th></tr></thead><tbody id="dash-recent"></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Today's Follow-ups</div></div>
+          <div style="padding:4px 0 8px" id="dash-fu"><div class="empty" style="padding:24px"><div class="ei" style="font-size:22px">📅</div><div class="et" style="font-size:11px">No follow-ups today</div></div></div>
+        </div>
+      </div>
+      <!-- CLUSTER BREAKDOWN -->
+      <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="chart-card"><div class="chart-title">Cluster Distribution</div><div class="chart-wrap"><canvas id="chart-clusters"></canvas></div></div>
+        <div class="card">
+          <div class="card-head"><div class="card-title">Counsellor Load</div></div>
+          <div style="padding:14px 16px" id="dash-counsellors"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ LEADS ══ -->
+    <div class="section-page" id="page-leads">
+      <div class="ph">
+        <div><div class="ph-title">All Leads</div><div class="ph-sub" id="leads-sub">Loading…</div></div>
+        <div class="ph-actions">
+          <select id="bulk-status-sel" style="background:var(--card);border:1px solid var(--border);color:var(--white);padding:6px 10px;border-radius:7px;font-size:11px;font-family:inherit">
+            <option value="">Bulk Update…</option>
+            <option value="NEW">→ NEW</option>
+            <option value="HOT">→ HOT</option>
+            <option value="FOLLOW-UP">→ FOLLOW-UP</option>
+            <option value="ASSESSMENT DONE">→ ASSESSED</option>
+            <option value="PAID">→ PAID</option>
+          </select>
+          <button class="btn-sec" onclick="bulkStatusUpdate()" style="font-size:11px">Apply to Checked</button>
+          <select id="cf-counsellor" onchange="applyFilters()" style="background:var(--card);border:1px solid var(--border);color:var(--white);padding:6px 10px;border-radius:7px;font-size:10px;font-family:inherit">
+            <option value="">All Counsellors</option>
+          </select>
+          <select id="cf-source" onchange="applyFilters()" style="background:var(--card);border:1px solid var(--border);color:var(--white);padding:6px 10px;border-radius:7px;font-size:10px;font-family:inherit">
+            <option value="">All Sources</option>
+          </select>
+          <select id="cf-qual" onchange="applyFilters()" style="background:var(--card);border:1px solid var(--border);color:var(--white);padding:6px 10px;border-radius:7px;font-size:10px;font-family:inherit">
+            <option value="">All Qualifications</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="ftabs" id="lead-tabs">
+            <button class="ft on" onclick="setStatusFilter('ALL',this)">All</button>
+            <button class="ft" onclick="setStatusFilter('NEW',this)">New</button>
+            <button class="ft" onclick="setStatusFilter('HOT',this)">🔥 Hot</button>
+            <button class="ft" onclick="setStatusFilter('FOLLOW-UP',this)">Follow-up</button>
+            <button class="ft" onclick="setStatusFilter('ASSESSMENT DONE',this)">Assessed</button>
+            <button class="ft" onclick="setStatusFilter('PAID',this)">Paid</button>
+            <button class="ft" onclick="setStatusFilter('UNASSIGNED',this)">Unassigned</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th><input type="checkbox" id="select-all" onclick="toggleSelectAll(this)" style="cursor:pointer"></th><th onclick="sortLeads('id')">ID ↕</th>
+              <th onclick="sortLeads('name')">Student ↕</th>
+              <th>Mobile</th>
+              <th onclick="sortLeads('qual')">Qualification ↕</th>
+              <th>Source</th>
+              <th onclick="sortLeads('counsellor')">Counsellor ↕</th>
+              <th>Hot Score</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr></thead>
+            <tbody id="leads-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ KANBAN ══ -->
+    <div class="section-page" id="page-kanban">
+      <div class="ph"><div><div class="ph-title">Pipeline Kanban</div><div class="ph-sub">Drag leads across stages</div></div></div>
+      <div class="kanban" id="kanban-board"></div>
+    </div>
+
+    <!-- ══ FOLLOW-UPS ══ -->
+    <div class="section-page" id="page-followups">
+      <div class="ph"><div><div class="ph-title">Follow-ups</div><div class="ph-sub" id="fu-sub">—</div></div></div>
+      <div class="page-tabs">
+        <button class="pt on" onclick="setFuView('today',this)">Today</button>
+        <button class="pt" onclick="setFuView('week',this)">This Week</button>
+        <button class="pt" onclick="setFuView('calendar',this)">Calendar</button>
+      </div>
+      <div id="fu-today-view">
+        <div class="card">
+          <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Student</th><th>Mobile</th><th>Counsellor</th><th>Last Notes</th><th>Due</th><th>Status</th></tr></thead>
+          <tbody id="fu-tbody"></tbody></table></div>
+        </div>
+      </div>
+      <div id="fu-calendar-view" style="display:none">
+        <div class="card" style="padding:16px">
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px">
+            <div class="cal-day-name">Sun</div><div class="cal-day-name">Mon</div><div class="cal-day-name">Tue</div>
+            <div class="cal-day-name">Wed</div><div class="cal-day-name">Thu</div><div class="cal-day-name">Fri</div><div class="cal-day-name">Sat</div>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ASSESSMENT ══ -->
+    <div class="section-page" id="page-assessment">
+      <div class="ph"><div><div class="ph-title">Assessment Results</div><div class="ph-sub">6D Career Scoring Engine data</div></div></div>
+      <div class="card" style="overflow:hidden">
+        <div class="card-head">
+          <div><div class="card-title">All Assessments</div><div class="card-sub" id="ass-sub">—</div></div>
+          <div class="search-wrap" style="border-color:var(--border)">
+            <span style="color:var(--muted);font-size:12px">🔍</span>
+            <input type="text" placeholder="Search name, cluster…" id="ass-search" oninput="filterAssessments(this.value)" style="background:none;border:none;padding:6px 0;font-size:11px;color:var(--white);font-family:inherit;outline:none;width:160px">
+          </div>
+        </div>
+        <div style="overflow-x:auto;width:100%;-webkit-overflow-scrolling:touch">
+          <table style="min-width:1100px;width:100%">
+            <thead><tr><th>ID</th><th>Student</th><th>Primary Cluster</th><th>Readiness</th><th style="white-space:nowrap">Analytical</th><th>Comm</th><th style="white-space:nowrap">Learning</th><th style="white-space:nowrap">Decision</th><th style="white-space:nowrap">Motivation</th><th style="white-space:nowrap">Clarity</th><th>Stage</th><th></th></tr></thead>
+            <tbody id="ass-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ REPORTS ══ -->
+    <div class="section-page" id="page-reports">
+      <div class="ph"><div><div class="ph-title">Career Reports</div><div class="ph-sub">Generate & track INWANG AI career reports</div></div></div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Report Queue</div></div>
+        <div class="tbl-wrap">
+          <table style="min-width:1000px">
+            <thead><tr><th>ID</th><th>Student</th><th>Primary Cluster</th><th>Readiness</th><th>Package</th><th>Report Status</th><th>Counsellor</th><th>Actions</th></tr></thead>
+            <tbody id="rpt-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ANALYTICS ══ -->
+    <div class="section-page" id="page-analytics">
+      <div class="ph"><div><div class="ph-title">Analytics</div><div class="ph-sub">Conversion, source & performance insights</div></div></div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">Leads by Source</div><div class="chart-wrap"><canvas id="chart-src2"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Cluster Distribution</div><div class="chart-wrap"><canvas id="chart-cl2"></canvas></div></div>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">Qualification Breakdown</div><div class="chart-wrap"><canvas id="chart-qual"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">State-wise Leads</div><div class="chart-wrap"><canvas id="chart-state"></canvas></div></div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-head"><div class="card-title">Conversion Funnel</div></div>
+        <div style="padding:20px" id="funnel-view"></div>
+      </div>
+    </div>
+
+    <!-- ══ REVENUE ══ -->
+    <div class="section-page" id="page-revenue">
+      <div class="ph"><div><div class="ph-title">Revenue Tracker</div><div class="ph-sub">Package-wise earnings · INWANG AI</div></div></div>
+      <div class="rev-grid">
+        <div class="rev-card"><div class="rev-num" id="rev-total">₹0</div><div class="rev-label">Total Revenue</div></div>
+        <div class="rev-card"><div class="rev-num" id="rev-report" style="color:var(--gold)">₹0</div><div class="rev-label">Reports (₹149)</div></div>
+        <div class="rev-card"><div class="rev-num" id="rev-counselling" style="color:var(--cyan)">₹0</div><div class="rev-label">Report+Counselling (₹249)</div></div>
+        <div class="rev-card"><div class="rev-num" id="rev-premium" style="color:var(--purple)">₹0</div><div class="rev-label">Premium (₹399)</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Enrolled Students</div></div>
+        <div class="tbl-wrap"><table><thead><tr><th>ID</th><th>Student</th><th>Package</th><th>Amount</th><th>Date</th><th>Counsellor</th></tr></thead><tbody id="rev-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ══ COUNSELLORS ══ -->
+    <div class="section-page" id="page-counsellors">
+      <div class="ph"><div><div class="ph-title">Counsellor Performance</div><div class="ph-sub">Load, conversion & activity</div></div></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="counsellor-grid"></div>
+    </div>
+
+    <!-- ══ DUPLICATES ══ -->
+    <div class="section-page" id="page-duplicates">
+      <div class="ph"><div><div class="ph-title">Duplicate Leads</div><div class="ph-sub">Review and manage duplicate entries</div></div></div>
+      <div class="card">
+        <div class="tbl-wrap"><table><thead><tr><th>Timestamp</th><th>Student</th><th>Mobile</th><th>Parent Mobile</th><th>Email</th><th>Existing ID</th><th>Counsellor</th><th>Status</th></tr></thead><tbody id="dup-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ══ EVENTS ══ -->
+    <div class="section-page" id="page-events">
+      <div class="ph"><div><div class="ph-title">Events & Batches</div><div class="ph-sub">School visits, seminars, coaching drives</div></div></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px" id="events-grid"></div>
+    </div>
+
+    <!-- ══ ACTIVITY LOG ══ -->
+    <div class="section-page" id="page-activity">
+      <div class="ph"><div><div class="ph-title">Activity Log</div><div class="ph-sub">Saari CRM activities ka record</div></div>
+        <div class="ph-actions"><button class="btn-sec" onclick="clearActivity()" style="font-size:11px">🗑 Clear Log</button></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="card-title">Recent Activities</div><div class="card-sub" id="activity-count">—</div></div>
+        <div style="padding:8px 0;max-height:600px;overflow-y:auto" id="activity-log-list">
+          <div class="empty"><div class="ei">📋</div><div class="et">No activities yet</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ IMPORT LEADS ══ -->
+    <div class="section-page" id="page-import">
+      <div class="ph"><div><div class="ph-title">Import Leads</div><div class="ph-sub">CSV/Excel se bulk leads upload karo</div></div></div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-head"><div class="card-title">📥 CSV Import</div></div>
+        <div style="padding:20px 24px">
+          <div style="border:2px dashed var(--border);border-radius:10px;padding:32px;text-align:center;margin-bottom:16px;transition:border-color .2s" id="csv-drop-zone"
+               ondragover="event.preventDefault();this.style.borderColor='var(--gb)'"
+               ondragleave="this.style.borderColor='var(--border)'"
+               ondrop="handleCSVDrop(event)">
+            <div style="font-size:28px;margin-bottom:8px">📂</div>
+            <div style="font-size:13px;font-weight:600;margin-bottom:4px">CSV file drag karo ya select karo</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:14px">Format: Name, Mobile, Email, City, State, Qualification, Stream, Source</div>
+            <input type="file" id="csv-file-input" accept=".csv,.xlsx" onchange="handleCSVFile(this)" style="display:none">
+            <button class="btn-primary" onclick="document.getElementById('csv-file-input').click()">Select File</button>
+          </div>
+          <div id="csv-preview" style="display:none">
+            <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:10px" id="csv-preview-title">Preview</div>
+            <div class="tbl-wrap" style="max-height:300px;overflow-y:auto">
+              <table id="csv-preview-table" style="min-width:600px"></table>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:14px">
+              <button class="btn-primary" onclick="importCSVLeads()" id="csv-import-btn">Import Leads</button>
+              <button class="btn-sec" onclick="document.getElementById('csv-preview').style.display='none'">Cancel</button>
+            </div>
+          </div>
+          <div style="margin-top:16px;padding:14px;background:rgba(200,168,75,.05);border:1px solid var(--gb);border-radius:8px">
+            <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px">CSV Format Example:</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);line-height:1.8">
+              Name,Mobile,Email,City,State,Qualification,Stream,Source<br>
+              Rahul Kumar,9876543210,rahul@email.com,Muzaffarpur,Bihar,12th,PCM,Social Media<br>
+              Priya Singh,9123456789,priya@email.com,Patna,Bihar,Graduation,Arts,Coaching
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WHATSAPP TEMPLATES MODAL ══ -->
+    <div class="modal-bg" id="wa-modal" onclick="if(event.target===this)closeModal('wa-modal')">
+      <div class="modal" style="max-width:500px">
+        <div class="modal-head">
+          <div class="modal-title">💬 WhatsApp Templates</div>
+          <button class="modal-close" onclick="closeModal('wa-modal')">✕</button>
+        </div>
+        <div class="modal-body" id="wa-modal-body"></div>
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS ══ -->
+    <!-- ══ SETTINGS ══ -->
+    <div class="section-page" id="page-settings">
+      <div class="ph"><div><div class="ph-title">Settings</div></div></div>
+
+      <!-- Change Password -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-head"><div class="card-title">🔑 Change Password</div></div>
+        <div style="padding:18px 22px">
+          <div style="margin-bottom:12px">
+            <div class="fl">Current Password</div>
+            <input id="pw-current" type="password" placeholder="Enter current password" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:9px 13px;border-radius:7px;font-size:12px;font-family:inherit;outline:none;margin-top:4px">
+          </div>
+          <div style="margin-bottom:12px">
+            <div class="fl">New Password</div>
+            <input id="pw-new" type="password" placeholder="Enter new password" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:9px 13px;border-radius:7px;font-size:12px;font-family:inherit;outline:none;margin-top:4px">
+          </div>
+          <div style="margin-bottom:14px">
+            <div class="fl">Confirm New Password</div>
+            <input id="pw-confirm" type="password" placeholder="Confirm new password" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:9px 13px;border-radius:7px;font-size:12px;font-family:inherit;outline:none;margin-top:4px">
+          </div>
+          <button class="btn-primary" onclick="changePassword()">Update Password</button>
+          <div id="pw-msg" style="font-size:11px;margin-top:8px"></div>
+        </div>
+      </div>
+
+      <!-- Manage Counsellors (Admin only) -->
+      <div class="card admin-only" style="margin-bottom:14px">
+        <div class="card-head">
+          <div class="card-title">👤 Manage Counsellors</div>
+          <button class="btn-primary" onclick="showAddCounsellor()" style="font-size:11px">+ Add Counsellor</button>
+        </div>
+        <div style="padding:18px 22px">
+          <div id="counsellor-list"></div>
+          <!-- Add Counsellor Form (hidden by default) -->
+          <div id="add-counsellor-form" style="display:none;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+            <div style="font-size:12px;font-weight:700;color:var(--gold);margin-bottom:12px">New Counsellor</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div>
+                <div class="fl">Full Name</div>
+                <input id="nc-name" type="text" placeholder="e.g. Rahul Kumar" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:8px 12px;border-radius:7px;font-size:12px;font-family:inherit;outline:none;margin-top:4px">
+              </div>
+              <div>
+                <div class="fl">Username</div>
+                <input id="nc-user" type="text" placeholder="e.g. rahul" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:8px 12px;border-radius:7px;font-size:12px;font-family:inherit;outline:none;margin-top:4px">
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+              <div>
+                <div class="fl">Password</div>
+                <input id="nc-pass" type="text" placeholder="Set password" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:8px 12px;border-radius:7px;font-size:12px;font-family:inherit;outline:none;margin-top:4px">
+              </div>
+              <div>
+                <div class="fl">Role / City</div>
+                <input id="nc-role" type="text" placeholder="e.g. Counsellor · Patna" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:8px 12px;border-radius:7px;font-size:12px;font-family:inherit;outline:none;margin-top:4px">
+              </div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn-primary" onclick="addCounsellor()">Save Counsellor</button>
+              <button class="btn-sec" onclick="document.getElementById('add-counsellor-form').style.display='none'">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification Settings -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-head"><div class="card-title">🔔 New Lead Notifications</div></div>
+        <div style="padding:18px 22px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+            <div>
+              <div style="font-size:13px;font-weight:600">WhatsApp Alert — New Lead</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px">Naya lead aane par aapko WhatsApp message milega</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+              <input type="checkbox" id="notif-wa" onchange="saveNotifSettings()" style="opacity:0;width:0;height:0">
+              <span id="notif-wa-slider" style="position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:100px;transition:.3s;border:1px solid var(--border)">
+                <span id="notif-wa-knob" style="position:absolute;left:3px;top:3px;width:16px;height:16px;background:var(--muted);border-radius:50%;transition:.3s"></span>
+              </span>
+            </label>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+            <div>
+              <div style="font-size:13px;font-weight:600">Sound Alert</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:2px">Naya lead aane par sound bajega</div>
+            </div>
+            <label style="position:relative;display:inline-block;width:44px;height:24px;cursor:pointer">
+              <input type="checkbox" id="notif-sound" onchange="saveNotifSettings()" style="opacity:0;width:0;height:0">
+              <span id="notif-sound-slider" style="position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:100px;transition:.3s;border:1px solid var(--border)">
+                <span id="notif-sound-knob" style="position:absolute;left:3px;top:3px;width:16px;height:16px;background:var(--muted);border-radius:50%;transition:.3s"></span>
+              </span>
+            </label>
+          </div>
+          <div style="margin-top:14px">
+            <div class="fl">Admin WhatsApp Number (for alerts)</div>
+            <input id="notif-number" type="text" placeholder="+91 9470659224" value="+91 9470659224" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:9px 13px;border-radius:7px;font-size:12px;font-family:inherit;outline:none;margin-top:4px">
+            <div style="font-size:10px;color:var(--muted);margin-top:4px">New lead aane par is number pe WhatsApp message jayega</div>
+          </div>
+          <button class="btn-primary" style="margin-top:12px" onclick="saveNotifSettings()">Save Notification Settings</button>
+        </div>
+      </div>
+
+      <!-- Google Sheets Connection -->
+      <div class="card">
+        <div class="card-head"><div class="card-title">🔗 Google Sheets Connection</div></div>
+        <div style="padding:18px 22px">
+          <div style="margin-bottom:14px">
+            <div class="fl">Apps Script Web App URL</div>
+            <input id="set-webapp" type="text" placeholder="https://script.google.com/macros/s/…/exec" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:9px 13px;border-radius:7px;font-size:11px;font-family:inherit;outline:none;margin-top:4px">
+            <div style="font-size:10px;color:var(--muted);margin-top:4px">Deploy AppScript as Web App → paste URL → full live CRM</div>
+          </div>
+          <div style="margin-bottom:14px">
+            <div class="fl">Counsellor Login Name</div>
+            <input id="set-counsellor" type="text" placeholder="Your name as in Sheet (e.g. SAKET RANJAN)" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:9px 13px;border-radius:7px;font-size:11px;font-family:inherit;outline:none;margin-top:4px">
+            <div style="font-size:10px;color:var(--muted);margin-top:4px">Set this to filter leads by counsellor automatically</div>
+          </div>
+          <button class="btn-primary" onclick="saveSettings()">Save Settings</button>
+          <div style="margin-top:20px;padding:14px;background:rgba(200,168,75,.05);border:1px solid var(--gb);border-radius:10px">
+            <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:8px">📋 AppScript Web App Setup</div>
+            <div style="font-size:11px;color:var(--muted2);line-height:1.8">
+              1. Google Sheet → Extensions → Apps Script<br>
+              2. Add <code style="background:rgba(255,255,255,.07);padding:1px 5px;border-radius:3px;font-size:10px">doGet()</code> function (code given below)<br>
+              3. Deploy → New deployment → Web App → Anyone → Deploy<br>
+              4. Copy URL → paste above
+            </div>
+            <div style="margin-top:10px;background:rgba(0,0,0,.3);border-radius:7px;padding:10px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted2);line-height:1.8">
+              function doGet(e) {<br>
+              &nbsp;&nbsp;var action = e.parameter.action;<br>
+              &nbsp;&nbsp;if(action==='leads') return getLeadsJSON();<br>
+              &nbsp;&nbsp;if(action==='assessments') return getAssessJSON();<br>
+              &nbsp;&nbsp;return ContentService.createTextOutput('{}');<br>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- LEAD DETAIL MODAL -->
+<div class="modal-bg" id="lead-modal" onclick="if(event.target===this)closeModal('lead-modal')">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="lm-title">Lead Detail</div>
+      <button class="modal-close" onclick="closeModal('lead-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs" id="lm-tabs">
+        <button class="mt on" onclick="setMTab('info',this)">Info</button>
+        <button class="mt" onclick="setMTab('assessment',this)">Assessment</button>
+        <button class="mt" onclick="setMTab('notes',this)">Notes & Timeline</button>
+        <button class="mt" onclick="setMTab('actions',this)">Quick Actions</button>
+      </div>
+      <div id="mtab-info" class="mtab-content on"></div>
+      <div id="mtab-assessment" class="mtab-content"></div>
+      <div id="mtab-notes" class="mtab-content"></div>
+      <div id="mtab-actions" class="mtab-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<script>
+// ══ CONFIG ══
+var CFG = {
+  webapp: localStorage.getItem('crm_webapp')||'',
+  counsellor: localStorage.getItem('crm_counsellor')||''
+};
+
+// ══ DEMO DATA ══
+var LEADS = [
+  {id:'IA-26-00015',name:'Najiya Khatoon',father:'Abdul Waheed',pmob:'9708024379',smob:'6206516698',email:'mohmeraj90@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'12th',stream:'PCB (Bio)',marks:'72',cat:'Paramedical',course:'',exam:'None',budget:'₹3–5L',goal:'Paramedical',confusion:'Govt vs private',source:'Social Media',sdet:'Instagram',counsellor:'SYED ZAHEER ABBAS',status:'ASSESSMENT DONE',ts:'3/30/2026',pkg:'',notes:[]},
+  {id:'IA-26-00014',name:'Gyan Ranjan Kumar',father:'Raj',pmob:'6289341207',smob:'7209155526',email:'gyanranjan011.Kr@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'Post Graduation',stream:'PCM (Maths)',marks:'68',cat:'Other',course:'None',exam:'CLAT',budget:'₹1–2L',goal:'Govt job',confusion:'No',source:'Social Media',sdet:'Inwang Instagram',counsellor:'SYED ZAHEER ABBAS',status:'NEW',ts:'3/29/2026',pkg:'',notes:[]},
+  {id:'IA-26-00013',name:'Kartikeya',father:'Shankar',pmob:'8294320777',smob:'7991126040',email:'firsttriptourism@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'12th',stream:'PCB (Bio)',marks:'73',cat:'Paramedical',course:'B.Pharma',exam:'None',budget:'₹5–7L',goal:'Paramedical',confusion:'Govt job',source:'Coaching',sdet:'Alpha Mathematics',counsellor:'SAKET RANJAN',status:'NEW',ts:'3/7/2026',pkg:'',notes:[]},
+  {id:'IA-26-00012',name:'Tauseef Ahmed',father:'Tasadduk',pmob:'9835807863',smob:'9123483457',email:'themuskperfum@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'Graduation',stream:'PCM (Maths)',marks:'66',cat:'Management',course:'MBA',exam:'None',budget:'₹3–5L',goal:'MBA',confusion:'MBA vs PGDM',source:'Coaching',sdet:'ABC',counsellor:'SYED ZAHEER ABBAS',status:'NEW',ts:'2/27/2026',pkg:'',notes:[]},
+  {id:'IA-26-00010',name:'Rajiya Khatoon',father:'Abdul Waheed',pmob:'8700028798',smob:'6203728603',email:'bbosereg@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'12th',stream:'PCB (Bio)',marks:'67',cat:'Paramedical',course:'Nursing',exam:'None',budget:'₹3–5L',goal:'Not sure',confusion:'Govt vs private',source:'Other',sdet:'Online',counsellor:'SYED ZAHEER ABBAS',status:'NEW',ts:'2/16/2026',pkg:'',notes:[]},
+  {id:'IA-26-00009',name:'Husna Khatoon',father:'Abdul Waheed',pmob:'9431208979',smob:'7979735137',email:'sonolsultan@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'12th',stream:'PCB (Bio)',marks:'64',cat:'Paramedical',course:'BSc Nursing',exam:'None',budget:'₹5–7L',goal:'Govt job',confusion:'Govt vs private',source:'Other',sdet:'Online',counsellor:'SAKET RANJAN',status:'NEW',ts:'2/16/2026',pkg:'',notes:[]},
+  {id:'IA-26-00007',name:'Akash Kumar',father:'Mohan Kumar Ray',pmob:'7739560983',smob:'7739560983',email:'kumarakash30994@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'12th',stream:'PCM (Maths)',marks:'65',cat:'IT & Computer',course:'B.Tech',exam:'None',budget:'₹1–2L',goal:'Govt Job',confusion:'Govt vs private',source:'Coaching',sdet:'L.S College',counsellor:'SYED ZAHEER ABBAS',status:'NEW',ts:'2/14/2026',pkg:'',notes:[]},
+  {id:'IA-26-00006',name:'Akshita Kumari',father:'Mukesh Kumar',pmob:'6209527339',smob:'6209527339',email:'Kakshita1215@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'Graduation',stream:'Arts',marks:'60',cat:'Management',course:'MBA',exam:'None',budget:'₹3–5L',goal:'MNC Job',confusion:'PGDM vs MBA',source:'Social Media',sdet:'Google',counsellor:'SAKET RANJAN',status:'NEW',ts:'2/13/2026',pkg:'',notes:[]},
+  {id:'IA-26-00005',name:'Himanshu Kumar',father:'Laxman Pandit',pmob:'9199655698',smob:'9229527578',email:'himanshuprajapati89745@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'12th',stream:'PCM (Maths)',marks:'81',cat:'Engineering',course:'B.Tech CSE',exam:'None',budget:'₹5–7L',goal:'Engineer',confusion:'B.Tech branch',source:'Social Media',sdet:'Social Media',counsellor:'SYED ZAHEER ABBAS',status:'HOT',ts:'2/12/2026',pkg:'',notes:[]},
+  {id:'IA-26-00004',name:'Shashiranjan Kumar',father:'Arvind Mahto',pmob:'8674898011',smob:'8674898011',email:'goluk80933@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'10th',stream:'PCB (Bio)',marks:'64',cat:'Paramedical',course:'Nursing',exam:'JEE Advanced',budget:'₹1–2L',goal:'Doctor',confusion:'Fees ka darr',source:'School',sdet:'Rajkiyekrit HS',counsellor:'SAKET RANJAN',status:'NEW',ts:'2/11/2026',pkg:'',notes:[]},
+  {id:'IA-26-00003',name:'Uttam Kumar',father:'Ravishankar Kumar',pmob:'9006640905',smob:'9006640905',email:'u1ttamkumar6868@gmail.com',city:'Bettiah',state:'Bihar',qual:'12th',stream:'PCM (Maths)',marks:'65',cat:'Engineering',course:'B.Tech CSE',exam:'JEE Main',budget:'₹5–7L',goal:'Engineering',confusion:'B.Tech engineering',source:'Other',sdet:'Dropper',counsellor:'SYED ZAHEER ABBAS',status:'HOT',ts:'2/7/2026',pkg:'',notes:[]},
+  {id:'IA-26-00001',name:'Shivam Kumar',father:'Mukesh Pandit',pmob:'7091911850',smob:'7091911850',email:'shivamprajapati12102009@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'10th',stream:'Vocational',marks:'84.8',cat:'Law',course:'JEE Mains',exam:'JEE Main',budget:'Not Sure',goal:'Govt job',confusion:'Govt job',source:'Other',sdet:'Coaching',counsellor:'SYED ZAHEER ABBAS',status:'NEW',ts:'1/23/2026',pkg:'',notes:[]},
+  {id:'IA-25-00005',name:'Nishant Thakur',father:'Arun Kumar',pmob:'9304027791',smob:'7667207159',email:'nishantthakur0715@gmail.com',city:'Muzaffarpur',state:'Bihar',qual:'Graduation (Appearing)',stream:'Commerce',marks:'',cat:'Management',course:'PGDM',exam:'None',budget:'₹5–7L',goal:'Corporate job',confusion:'PGDM vs MBA',source:'Referral',sdet:'Manoj Kumar Thakur',counsellor:'SAKET RANJAN',status:'PAID',ts:'12/20/2025',pkg:'₹249',notes:[]},
+  {id:'IA-25-00003',name:'Manjari Kumari',father:'Mukesh Kumar',pmob:'9608907603',smob:'9868332525',email:'manjarikumari1236@gmail.com',city:'Greater Noida',state:'UP',qual:'12th',stream:'PCM (Maths)',marks:'72.40',cat:'Engineering',course:'B.Tech CSE AI&ML',exam:'JEE Main',budget:'₹1–2L',goal:'Engineer',confusion:'Best branch',source:'Other',sdet:'Accurate Online',counsellor:'MOHAMMAD MERAJ',status:'PAID',ts:'12/16/2025',pkg:'₹149',notes:[]},
+];
+
+var ASSESSMENTS = [
+  {id:'IA-26-00015',name:'Najiya Khatoon',mob:'6206516698',a:4.25,c:4.75,l:5.0,d:4.63,m:5.13,cl:5.17,r:4.99,f:4.94,c1:'Arts / Humanities / Creative',c2:'Teaching / Education',c3:'Law / Legal Studies',rl:'Medium Readiness',stage:'SENIOR'},
+  {id:'IA-26-00011',name:'Najiya (Test)',mob:'9708024379',a:5.5,c:5.33,l:5.5,d:5.0,m:5.25,cl:5.0,r:5.225,f:5.25,c1:'Research / Science',c2:'Engineering / Technical',c3:'IT / Computer Applications',rl:'High Readiness',stage:'SENIOR'},
+];
+
+var DUPS = [
+  {ts:'3/8/2026',name:'Kartikeya',smob:'7991126040',pmob:'8294320777',email:'firsttriptourism@gmail.com',eid:'IA-26-00013',counsellor:'SAKET RANJAN',status:'Duplicate Lead'},
+  {ts:'3/29/2026',name:'Gyan',smob:'9955423573',pmob:'7979735137',email:'Remtechnet@gmail.com',eid:'IA-000005',counsellor:'',status:'Duplicate Lead'},
+  {ts:'3/29/2026',name:'Najiya Khatoon',smob:'9708024379',pmob:'6206516698',email:'mohmeraj90@gmail.com',eid:'IA-26-00011',counsellor:'SAKET RANJAN',status:'IGNORE'},
+];
+
+var EVENTS = [
+  {name:'Alpha Mathematics Coaching',city:'Muzaffarpur',date:'3/7/2026',source:'Coaching',leads:2,type:'Coaching Drive'},
+  {name:'L.S College',city:'Muzaffarpur',date:'2/14/2026',source:'Coaching',leads:1,type:'College Visit'},
+  {name:'Instagram Campaign',city:'Pan-Bihar',date:'3/29/2026',source:'Social Media',leads:7,type:'Digital'},
+  {name:'Acurate Seminar',city:'Muzaffarpur',date:'12/10/2025',source:'Seminar',leads:2,type:'Event'},
+];
+
+var COUNSELLORS_DATA = [
+  {name:'SAKET RANJAN',color:'#00d4ff',regions:'Muzaffarpur,Patna',sources:'School,Coaching',maxLoad:50,active:true},
+  {name:'SYED ZAHEER ABBAS',color:'#7c3aed',regions:'Darbhanga,Samastipur',sources:'Social Media',maxLoad:50,active:true},
+  {name:'MOHAMMAD MERAJ',color:'#c8a84b',regions:'All',sources:'All',maxLoad:50,active:true},
+  {name:'PURNIMA SINGH',color:'#10b981',regions:'—',sources:'—',maxLoad:50,active:false},
+];
+
+// ══ STATE ══
+var statusFilter='ALL', sortKey='', sortDir=1;
+var counsellorFilter='', sourceFilter='', qualFilter='';
+var currentLead=null, fuView='today';
+var notes = {}; // lead_id -> []
+
+// ══ CHARTS ══
+var charts = {};
+function makeChart(id, type, labels, datasets, opts){
+  var ctx = document.getElementById(id);
+  if(!ctx) return;
+  if(charts[id]) charts[id].destroy();
+  charts[id] = new Chart(ctx.getContext('2d'), {
+    type,
+    data: {labels, datasets},
+    options: Object.assign({
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#6b7a99',font:{size:10,family:'Plus Jakarta Sans'}},boxWidth:10}},
+      scales: type==='bar'||type==='line'?{
+        x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7a99',font:{size:9}}},
+        y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#6b7a99',font:{size:9}}}
+      }:{}
+    }, opts||{})
+  });
+}
+
+// ══ INIT ══
+// ══ USERS ══
+var USERS = [
+  {username:'admin',password:'inwang2026',name:'Mohammad Meraj',role:'Founder · INWANG AI',initials:'MM',counsellor:'MOHAMMAD MERAJ'},
+  {username:'saket',password:'team@inwang',name:'Saket Ranjan',role:'Counsellor · Muzaffarpur',initials:'SR',counsellor:'SAKET RANJAN'},
+  {username:'zaheer',password:'team@inwang',name:'Syed Zaheer Abbas',role:'Counsellor · Darbhanga',initials:'SZ',counsellor:'SYED ZAHEER ABBAS'},
+  {username:'purnima',password:'team@inwang',name:'Purnima Singh',role:'Counsellor',initials:'PS',counsellor:'PURNIMA SINGH'},
+  {username:'meraj',password:'inwang2026',name:'Mohammad Meraj',role:'Founder · INWANG AI',initials:'MM',counsellor:'MOHAMMAD MERAJ'},
+];
+var currentUser = null;
+
+function doLogin(){
+  var u = document.getElementById('login-user').value.trim().toLowerCase();
+  var p = document.getElementById('login-pass').value;
+  var err = document.getElementById('login-err');
+  err.textContent = '';
+  if(!u||!p){err.textContent='Please enter username and password.';return;}
+  var found = USERS.find(x=>x.username===u && x.password===p);
+  if(!found){err.textContent='Invalid credentials. Please try again.';
+    document.getElementById('login-pass').value='';
+    document.getElementById('login-pass').focus();
+    return;}
+  currentUser = found;
+  // Save session
+  sessionStorage.setItem('crm_user', JSON.stringify(found));
+  // Update sidebar
+  document.getElementById('sb-user-name').textContent = found.name;
+  document.getElementById('sb-user-role').textContent = found.role;
+  document.getElementById('sb-av-init').textContent = found.initials;
+  // Hide login
+  document.getElementById('login-screen').style.display = 'none';
+  // Log login activity
+  ACTIVITY_LOG = JSON.parse(localStorage.getItem('crm_activity')||'[]');
+  logActivity('Login', found.name+' logged in');
+  // Init CRM
+  initCRM();
+}
+
+function doLogout(){
+  if(!confirm('Sign out karna chahte hain?')) return;
+  sessionStorage.removeItem('crm_user');
+  currentUser = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-user').value = '';
+  document.getElementById('login-pass').value = '';
+  document.getElementById('login-err').textContent = '';
+  // Reset to dashboard
+  nav('dashboard', document.querySelector('.sb-item'));
+}
+
+function checkSession(){
+  var saved = sessionStorage.getItem('crm_user');
+  if(saved){
+    try{
+      currentUser = JSON.parse(saved);
+      document.getElementById('sb-user-name').textContent = currentUser.name;
+      document.getElementById('sb-user-role').textContent = currentUser.role;
+      document.getElementById('sb-av-init').textContent = currentUser.initials;
+      document.getElementById('login-screen').style.display = 'none';
+      return true;
+    }catch(e){}
+  }
+  return false;
+}
+
+function initCRM(){
+  // Role-based UI setup
+  var isAdmin = !currentUser || currentUser.username==='admin' || currentUser.username==='meraj';
+  if(!isAdmin){
+    // Counsellor — hide admin pages
+    document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none');
+    // Hide counsellor filter dropdown (they see only own leads)
+    var cfd = document.getElementById('cf-counsellor');
+    if(cfd) cfd.parentElement.style.display='none';
+    // Hide revenue sidebar
+    var revSb = document.querySelector('[onclick*="revenue"]');
+    if(revSb) revSb.style.display='none';
+  } else {
+    // Admin — show everything
+    document.querySelectorAll('.admin-only').forEach(el=>el.style.display='');
+  }
+  // Update topbar welcome
+  if(currentUser){
+    document.getElementById('tb-title').textContent = 'Welcome, '+currentUser.name.split(' ')[0]+'!';
+    setTimeout(()=>document.getElementById('tb-title').textContent='Dashboard',2000);
+  }
+  // Load saved passwords and extra counsellors
+  loadSavedPasswords();
+  loadExtraCounsellors();
+  // Load notification settings
+  updateToggleUI();
+  // Render counsellor list in settings
+  setTimeout(renderCounsellorList, 500);
+  setTimeout(renderActivityLog, 500);
+  // Start lead check interval (every 2 min when synced)
+  if(CFG.webapp) setInterval(function(){ syncData(); checkNewLeads(); }, 120000);
+  updateSideBadges();
+  renderDashboard();
+  renderLeads();
+  renderKanban();
+  renderAssessments();
+  renderReports();
+  renderDuplicates();
+  renderCounsellors();
+  renderEvents();
+  renderFollowUps();
+  renderRevenue();
+  populateFilters();
+  if(CFG.webapp) syncData();
+}
+
+window.onload = function(){
+  var d = new Date();
+  document.getElementById('tb-date').textContent = d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  // Check existing session
+  if(!checkSession()){
+    // Show login — focus on username
+    setTimeout(()=>document.getElementById('login-user').focus(), 100);
+    return;
+  }
+  initCRM();
+};
+
+function updateSideBadges(){
+  document.getElementById('sb-new').textContent = LEADS.filter(l=>l.status==='NEW'||l.status==='HOT').length;
+  document.getElementById('sb-ass').textContent = ASSESSMENTS.length;
+  document.getElementById('sb-dup').textContent = DUPS.length;
+  document.getElementById('sb-fu').textContent = getTodayFU().length;
+}
+
+// ══ NAV ══
+function nav(p, el){
+  document.querySelectorAll('.section-page').forEach(x=>x.classList.remove('active'));
+  var pg = document.getElementById('page-'+p);
+  if(pg) pg.classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  var titles = {dashboard:'Dashboard',leads:'All Leads',kanban:'Pipeline Kanban',followups:'Follow-ups',assessment:'Assessments',reports:'Career Reports',analytics:'Analytics',revenue:'Revenue',counsellors:'Counsellors',duplicates:'Duplicates',events:'Events',settings:'Settings'};
+  document.getElementById('tb-title').textContent = titles[p]||p;
+  // Render analytics charts on view
+  if(p==='analytics') setTimeout(renderAnalyticsCharts,100);
+}
+
+// ══ DASHBOARD ══
+function renderDashboard(){
+  var tot=LEADS.length, nw=LEADS.filter(l=>l.status==='NEW').length;
+  var hot=LEADS.filter(l=>l.status==='HOT').length;
+  var ass=ASSESSMENTS.length, paid=LEADS.filter(l=>l.status==='PAID').length;
+  var fuT=getTodayFU().length, dup=DUPS.length;
+  var rev=LEADS.filter(l=>l.pkg).reduce((s,l)=>s+parseInt((l.pkg||'0').replace(/[^\d]/g,'')||0),0);
+
+  document.getElementById('s-total').textContent=tot;
+  document.getElementById('s-new').textContent=nw;
+  document.getElementById('s-hot').textContent=hot;
+  document.getElementById('s-ass').textContent=ass;
+  document.getElementById('s-paid').textContent=paid;
+  document.getElementById('s-fu-today').textContent=fuT;
+  document.getElementById('s-dup').textContent=dup;
+  document.getElementById('s-rev').textContent='₹'+rev;
+
+  // Recent leads
+  var recent = [...LEADS].reverse().slice(0,8);
+  document.getElementById('dash-recent').innerHTML = recent.map(l=>`
+    <tr><td><span class="tid">${l.id}</span></td><td><div class="tname">${l.name}</div><div class="tsub">${l.city}</div></td>
+    <td style="font-size:10px">${l.qual}</td><td>${sb(l.status)}</td>
+    <td>${hotScore(l)}</td></tr>`).join('');
+
+  // Follow-ups today
+  var fu = getTodayFU();
+  var fuEl = document.getElementById('dash-fu');
+  fuEl.innerHTML = fu.length ? fu.map(l=>`
+    <div style="display:flex;align-items:flex-start;gap:9px;padding:10px 14px;border-bottom:1px solid var(--border)">
+      <div style="width:7px;height:7px;border-radius:50%;background:var(--orange);flex-shrink:0;margin-top:4px"></div>
+      <div><div style="font-size:11px;font-weight:700">${l.name}</div>
+      <div style="font-size:10px;color:var(--muted)">${l.counsellor||'Unassigned'}</div>
+      <div style="font-size:9px;color:var(--orange);font-family:'DM Mono',monospace;margin-top:2px">Due today</div>
+      </div><button class="ab ab-wa" style="margin-left:auto" onclick="openWA('${l.smob}','${l.name}')">💬</button>
+    </div>`).join('') :
+    '<div class="empty" style="padding:24px"><div class="ei" style="font-size:20px">📅</div><div class="et" style="font-size:11px">No follow-ups today</div></div>';
+
+  // Source chart
+  var src={};LEADS.forEach(l=>{src[l.source]=(src[l.source]||0)+1;});
+  makeChart('chart-sources','doughnut',Object.keys(src),[{data:Object.values(src),backgroundColor:['#c8a84b','#00d4ff','#7c3aed','#10b981','#f97316','#ec4899','#6b7a99'],borderWidth:0}],{plugins:{legend:{position:'right'}}});
+
+  // Monthly chart
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var monthly=Array(12).fill(0);
+  LEADS.forEach(l=>{
+    var m=new Date(l.ts).getMonth();
+    if(!isNaN(m)) monthly[m]++;
+  });
+  makeChart('chart-monthly','bar',months,[{data:monthly,backgroundColor:'rgba(200,168,75,.6)',borderColor:'var(--gold)',borderWidth:1,borderRadius:4}]);
+
+  // Clusters chart
+  var cl={};ASSESSMENTS.forEach(a=>{cl[a.c1]=(cl[a.c1]||0)+1;});
+  if(!Object.keys(cl).length) cl={'No Data':1};
+  makeChart('chart-clusters','pie',Object.keys(cl),[{data:Object.values(cl),backgroundColor:['#c8a84b','#00d4ff','#7c3aed','#10b981','#f97316','#ec4899'],borderWidth:0}],{plugins:{legend:{position:'bottom'}}});
+
+  // Counsellor load
+  var cdEl=document.getElementById('dash-counsellors');
+  cdEl.innerHTML=COUNSELLORS_DATA.filter(c=>c.active).map(c=>{
+    var cnt=LEADS.filter(l=>l.counsellor===c.name).length;
+    var pct=Math.round(cnt/c.maxLoad*100);
+    return `<div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+        <span style="font-size:11px;font-weight:600">${c.name.split(' ')[0]}</span>
+        <span style="font-size:10px;font-family:'DM Mono',monospace;color:${c.color}">${cnt} leads</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${c.color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ══ LEADS ══
+function renderLeads(){
+  var filtered = getFilteredLeads();
+  document.getElementById('leads-sub').textContent = filtered.length+' of '+LEADS.length+' leads';
+  var tb = document.getElementById('leads-tbody');
+  if(!filtered.length){tb.innerHTML='<tr><td colspan="9" class="empty"><div class="ei">👥</div><div class="et">No leads match</div></td></tr>';return;}
+  tb.innerHTML = filtered.map(l=>`
+    <tr>
+      <td><input type="checkbox" class="lead-cb" value="${l.id}" style="cursor:pointer"></td><td><span class="tid">${l.id}</span><div class="tsub">${l.ts||'—'}</div><div style="font-size:9px;margin-top:2px">${leadAge(l.ts)}</div></td>
+      <td><div class="tname">${l.name}</div><div class="tsub">${l.city||''}${l.state?', '+l.state:''}</div></td>
+      <td><div class="ttel">${l.smob||'—'}</div><div class="tsub">P: ${l.pmob||'—'}</div></td>
+      <td><div style="font-size:11px">${l.qual||'—'}</div><div class="tsub">${l.stream||''}</div></td>
+      <td><div style="font-size:11px;font-weight:600">${l.source||'—'}</div><div class="tsub">${l.sdet||''}</div></td>
+      <td>${ccChip(l.counsellor)}</td>
+      <td>${hotScore(l)}</td>
+      <td>
+        <select class="qa-select" onchange="updateStatus('${l.id}',this.value)">
+          ${['NEW','HOT','WARM','FOLLOW-UP','ASSESSMENT DONE','PAID','CLOSED'].map(s=>`<option ${l.status===s?'selected':''} value="${s}">${s}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <div class="actions">
+          <button class="ab ab-view" onclick="openLead('${l.id}')">👁</button>
+          <button class="ab ab-wa" onclick="openWA('${l.smob}','${l.name}')">💬</button>
+          ${ASSESSMENTS.find(a=>a.id===l.id)?`<button class="ab ab-report" onclick="generateRpt('${l.id}')">📄</button>`:''}
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function getFilteredLeads(){
+  return LEADS.filter(l=>{
+    // Role-based: counsellor sees only own leads; admin sees all
+    if(currentUser && currentUser.username!=='admin' && currentUser.username!=='meraj'){
+      if(l.counsellor !== currentUser.counsellor) return false;
+    }
+    if(statusFilter==='ALL') return true;
+    if(statusFilter==='UNASSIGNED') return !l.counsellor||l.counsellor==='UNASSIGNED';
+    return l.status===statusFilter;
+  }).filter(l=>!counsellorFilter||l.counsellor===counsellorFilter)
+    .filter(l=>!sourceFilter||l.source===sourceFilter)
+    .filter(l=>!qualFilter||l.qual===qualFilter);
+}
+
+function setStatusFilter(s,btn){
+  statusFilter=s;
+  document.querySelectorAll('#lead-tabs .ft').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  renderLeads();
+}
+
+function applyFilters(){
+  counsellorFilter=document.getElementById('cf-counsellor').value;
+  sourceFilter=document.getElementById('cf-source').value;
+  qualFilter=document.getElementById('cf-qual').value;
+  renderLeads();
+}
+
+function sortLeads(key){
+  if(sortKey===key) sortDir*=-1; else{sortKey=key;sortDir=1;}
+  LEADS.sort((a,b)=>String(a[key]||'').localeCompare(String(b[key]||''))*sortDir);
+  renderLeads();
+}
+
+function populateFilters(){
+  var cs=[...new Set(LEADS.map(l=>l.counsellor).filter(Boolean))];
+  var cf=document.getElementById('cf-counsellor');
+  cs.forEach(c=>{var o=document.createElement('option');o.value=c;o.textContent=c;cf.appendChild(o);});
+  var ss=[...new Set(LEADS.map(l=>l.source).filter(Boolean))];
+  var sf=document.getElementById('cf-source');
+  ss.forEach(s=>{var o=document.createElement('option');o.value=s;o.textContent=s;sf.appendChild(o);});
+  var qs=[...new Set(LEADS.map(l=>l.qual).filter(Boolean))];
+  var qf=document.getElementById('cf-qual');
+  qs.forEach(q=>{var o=document.createElement('option');o.value=q;o.textContent=q;qf.appendChild(o);});
+}
+
+// ══ KANBAN ══
+var STAGES=['NEW','HOT','FOLLOW-UP','ASSESSMENT DONE','PAID'];
+var STAGE_COLORS={'NEW':'var(--cyan)','HOT':'var(--red)','FOLLOW-UP':'var(--orange)','ASSESSMENT DONE':'var(--gold)','PAID':'var(--green)'};
+function renderKanban(){
+  var kb=document.getElementById('kanban-board');
+  var isAdminK=!currentUser||currentUser.username==='admin'||currentUser.username==='meraj';
+  kb.innerHTML=STAGES.map(s=>{
+    var leads=LEADS.filter(l=>{
+      if(!isAdminK && l.counsellor!==currentUser.counsellor) return false;
+      return l.status===s;
+    });
+    return `<div class="kb-col">
+      <div class="kb-head">
+        <span class="kb-title" style="color:${STAGE_COLORS[s]}">${s}</span>
+        <span class="kb-count" style="background:${STAGE_COLORS[s]}22;color:${STAGE_COLORS[s]}">${leads.length}</span>
+      </div>
+      <div class="kb-body">
+        ${leads.map(l=>`<div class="kb-card" onclick="openLead('${l.id}')">
+          <div class="kb-id">${l.id}</div>
+          <div class="kb-name">${l.name}</div>
+          <div class="kb-sub">${l.city||''} · ${l.qual||''}</div>
+          <div class="kb-meta">${hotScore(l)}<span style="font-size:9px;color:var(--muted)">${l.source||''}</span></div>
+        </div>`).join('')||'<div style="text-align:center;padding:20px;color:var(--muted);font-size:11px">Empty</div>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ FOLLOW-UPS ══
+function getTodayFU(){return LEADS.filter(l=>l.next_fu&&isToday(l.next_fu));}
+function isToday(d){
+  var t=new Date(),td=new Date(d);
+  return t.toDateString()===td.toDateString();
+}
+function setFuView(v,btn){
+  fuView=v;
+  document.querySelectorAll('.pt').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  document.getElementById('fu-today-view').style.display=v==='calendar'?'none':'block';
+  document.getElementById('fu-calendar-view').style.display=v==='calendar'?'block':'none';
+  if(v==='calendar') renderCalendar();
+  renderFollowUps();
+}
+function renderFollowUps(){
+  var leads = fuView==='week' ? LEADS.filter(l=>l.next_fu&&isThisWeek(l.next_fu)) : getTodayFU();
+  document.getElementById('fu-sub').textContent = leads.length+' follow-up'+(leads.length!==1?'s':'')+' '+(fuView==='today'?'today':fuView==='week'?'this week':'');
+  var tb=document.getElementById('fu-tbody');
+  tb.innerHTML=leads.length?leads.map(l=>`<tr>
+    <td><span class="tid">${l.id}</span></td><td><div class="tname">${l.name}</div></td>
+    <td><span class="ttel">${l.pmob||'—'}</span></td><td>${ccChip(l.counsellor)}</td>
+    <td style="font-size:11px;color:var(--muted2);max-width:160px">${l.last_notes||'—'}</td>
+    <td style="font-size:11px;color:var(--gold);font-family:'DM Mono',monospace">${l.next_fu||'—'}</td>
+    <td>${sb(l.status)}</td></tr>`).join(''):
+    '<tr><td colspan="7" class="empty"><div class="ei">📅</div><div class="et">No follow-ups</div></td></tr>';
+}
+function isThisWeek(d){
+  var now=new Date(),s=new Date(now);s.setDate(now.getDate()-now.getDay());
+  var e=new Date(s);e.setDate(s.getDate()+6);
+  var td=new Date(d);return td>=s&&td<=e;
+}
+function renderCalendar(){
+  var cg=document.getElementById('cal-grid');
+  var now=new Date(),year=now.getFullYear(),month=now.getMonth();
+  var first=new Date(year,month,1).getDay();
+  var days=new Date(year,month+1,0).getDate();
+  var html='';
+  for(var i=0;i<first;i++)html+='<div class="cal-day" style="opacity:.2"></div>';
+  for(var d=1;d<=days;d++){
+    var isT=d===now.getDate();
+    var hasFu=LEADS.some(l=>l.next_fu&&new Date(l.next_fu).getDate()===d&&new Date(l.next_fu).getMonth()===month);
+    html+=`<div class="cal-day${isT?' today':''}${hasFu?' has-fu':''}">
+      <div class="cal-day-num">${d}</div>
+      ${hasFu?'<div class="cal-fu-dot"></div>':''}
+    </div>`;
+  }
+  cg.innerHTML=html;
+}
+
+// ══ ASSESSMENTS ══
+var SC=['#c8a84b','#00d4ff','#7c3aed','#10b981','#f97316','#ec4899'];
+var DK=['a','c','l','d','m','cl'];
+var DN=['Analytical','Comm','Learning','Decision','Motivation','Clarity'];
+function renderAssessments(){
+  document.getElementById('ass-sub').textContent=ASSESSMENTS.length+' assessments';
+  var tb=document.getElementById('ass-tbody');
+  tb.innerHTML=ASSESSMENTS.length?ASSESSMENTS.map(a=>`<tr>
+    <td><span class="tid">${a.id}</span></td>
+    <td><div class="tname">${a.name}</div></td>
+    <td><span style="font-size:10px;font-weight:700;color:var(--cyan)">${a.c1}</span></td>
+    <td>${rlBadge(a.rl)}</td>
+    ${DK.map((k,i)=>`<td><div style="display:flex;align-items:center;gap:4px">
+      <div style="width:32px;height:3px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden"><div style="height:100%;width:${Math.round(a[k]/7*100)}%;background:${SC[i]}"></div></div>
+      <span style="font-size:9px;font-family:'DM Mono',monospace;color:${SC[i]}">${Number(a[k]).toFixed(1)}</span>
+    </div></td>`).join('')}
+    <td><span style="font-size:9px;background:rgba(255,255,255,.05);padding:1px 6px;border-radius:3px">${a.stage||'—'}</span></td>
+    <td><button class="ab ab-view" onclick="openAssDetail('${a.id}')">📊</button></td>
+  </tr>`).join(''):
+  '<tr><td colspan="12" class="empty"><div class="ei">🧠</div><div class="et">No assessments yet</div><div class="es">Students complete Form 2 to appear here</div></td></tr>';
+}
+
+// ══ REPORTS ══
+function renderReports(){
+  var tb=document.getElementById('rpt-tbody');
+  var candidates=LEADS.filter(l=>l.status==='ASSESSMENT DONE'||l.status==='PAID');
+  tb.innerHTML=candidates.length?candidates.map(l=>{
+    var a=ASSESSMENTS.find(x=>x.id===l.id);
+    return `<tr>
+      <td><span class="tid">${l.id}</span></td>
+      <td><div class="tname">${l.name}</div></td>
+      <td style="font-size:11px;color:var(--cyan)">${a?a.c1:'—'}</td>
+      <td>${a?rlBadge(a.rl):'<span style="color:var(--muted);font-size:10px">Not assessed</span>'}</td>
+      <td><select class="qa-select" onchange="updatePkg('${l.id}',this.value)">
+        <option value="">Select…</option>
+        <option value="149" ${l.pkg==='₹149'?'selected':''}>₹149 — Report</option>
+        <option value="249" ${l.pkg==='₹249'?'selected':''}>₹249 — Report + Counselling</option>
+        <option value="399" ${l.pkg==='₹399'?'selected':''}>₹399 — Premium</option>
+      </select></td>
+      <td><span class="badge ${l.status==='PAID'?'b-paid':'b-done'}">${l.status==='PAID'?'✅ Sent':'⏳ Pending'}</span></td>
+      <td>${ccChip(l.counsellor)}</td>
+      <td><div class="actions">
+        <button class="ab ab-report" onclick="generateRpt('${l.id}')">📄 Generate</button>
+        <button class="ab ab-wa" onclick="openWA('${l.smob}','${l.name}')">💬 Send</button>
+      </div></td>
+    </tr>`;
+  }).join(''):
+  '<tr><td colspan="8" class="empty"><div class="ei">📄</div><div class="et">No reports pending</div><div class="es">Leads with Assessment Done appear here</div></td></tr>';
+}
+
+// ══ ANALYTICS CHARTS ══
+function renderAnalyticsCharts(){
+  var src={};LEADS.forEach(l=>{src[l.source]=(src[l.source]||0)+1;});
+  makeChart('chart-src2','bar',Object.keys(src),[{data:Object.values(src),backgroundColor:'rgba(200,168,75,.6)',borderColor:'var(--gold)',borderWidth:1,borderRadius:4,label:'Leads'}]);
+
+  var cl={};ASSESSMENTS.forEach(a=>{cl[a.c1]=(cl[a.c1]||0)+1;});
+  if(!Object.keys(cl).length)cl={'No Data':1};
+  makeChart('chart-cl2','doughnut',Object.keys(cl),[{data:Object.values(cl),backgroundColor:SC,borderWidth:0}],{plugins:{legend:{position:'right'}}});
+
+  var ql={};LEADS.forEach(l=>{ql[l.qual]=(ql[l.qual]||0)+1;});
+  makeChart('chart-qual','bar',Object.keys(ql),[{data:Object.values(ql),backgroundColor:'rgba(0,212,255,.5)',borderColor:'var(--cyan)',borderWidth:1,borderRadius:4,label:'Leads'}]);
+
+  var st={};LEADS.forEach(l=>{st[l.state]=(st[l.state]||0)+1;});
+  makeChart('chart-state','doughnut',Object.keys(st),[{data:Object.values(st),backgroundColor:['#c8a84b','#00d4ff','#7c3aed','#10b981','#f97316'],borderWidth:0}],{plugins:{legend:{position:'right'}}});
+
+  // Funnel
+  var stages=['Total Leads','Contacted','Assessment Done','Report Sent','Paid/Enrolled'];
+  var counts=[LEADS.length,Math.round(LEADS.length*.7),ASSESSMENTS.length,LEADS.filter(l=>l.status==='SENT').length,LEADS.filter(l=>l.status==='PAID').length];
+  var fv=document.getElementById('funnel-view');
+  fv.innerHTML=stages.map((s,i)=>{
+    var pct=LEADS.length?Math.round(counts[i]/LEADS.length*100):0;
+    var colors=['var(--white)','var(--cyan)','var(--gold)','var(--purple)','var(--green)'];
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span style="font-size:11px;font-weight:600">${s}</span>
+        <span style="font-size:11px;font-family:'DM Mono',monospace;color:${colors[i]}">${counts[i]} (${pct}%)</span>
+      </div>
+      <div style="height:18px;background:rgba(255,255,255,.04);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${colors[i]};opacity:.7;border-radius:4px;transition:width .8s"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ REVENUE ══
+function renderRevenue(){
+  var rpt=LEADS.filter(l=>l.pkg==='₹149').length;
+  var rc=LEADS.filter(l=>l.pkg==='₹249').length;
+  var rp=LEADS.filter(l=>l.pkg==='₹399').length;
+  var total=rpt*149+rc*249+rp*399;
+  document.getElementById('rev-total').textContent='₹'+total.toLocaleString('en-IN');
+  document.getElementById('rev-report').textContent='₹'+(rpt*149).toLocaleString('en-IN')+' ('+rpt+')';
+  document.getElementById('rev-counselling').textContent='₹'+(rc*249).toLocaleString('en-IN')+' ('+rc+')';
+  document.getElementById('rev-premium').textContent='₹'+(rp*399).toLocaleString('en-IN')+' ('+rp+')';
+  var tb=document.getElementById('rev-tbody');
+  var paid=LEADS.filter(l=>l.pkg||l.status==='PAID');
+  tb.innerHTML=paid.length?paid.map(l=>`<tr>
+    <td><span class="tid">${l.id}</span></td>
+    <td><div class="tname">${l.name}</div></td>
+    <td><select class="qa-select" onchange="updatePkg('${l.id}',this.value)">
+      <option value="">—</option>
+      <option value="149" ${l.pkg==='₹149'?'selected':''}>₹149 Report</option>
+      <option value="249" ${l.pkg==='₹249'?'selected':''}>₹249 Report+Counselling</option>
+      <option value="399" ${l.pkg==='₹399'?'selected':''}>₹399 Premium</option>
+    </select></td>
+    <td style="font-size:12px;font-weight:700;color:var(--green)">${l.pkg||'—'}</td>
+    <td style="font-size:11px;color:var(--muted)">${l.ts||'—'}</td>
+    <td>${ccChip(l.counsellor)}</td>
+  </tr>`).join(''):
+  '<tr><td colspan="6" class="empty"><div class="ei">💰</div><div class="et">No payments recorded</div></td></tr>';
+}
+
+// ══ COUNSELLORS ══
+function renderCounsellors(){
+  var cg=document.getElementById('counsellor-grid');
+  cg.innerHTML=COUNSELLORS_DATA.map(c=>{
+    var leads=LEADS.filter(l=>l.counsellor===c.name);
+    var done=leads.filter(l=>l.status==='ASSESSMENT DONE').length;
+    var paid=leads.filter(l=>l.status==='PAID').length;
+    var pct=Math.round(leads.length/c.maxLoad*100);
+    var conv=leads.length?Math.round(paid/leads.length*100):0;
+    return `<div class="card" style="padding:18px">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:15px">
+        <div style="width:38px;height:38px;border-radius:9px;background:${c.color}22;border:1px solid ${c.color}44;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:${c.color};flex-shrink:0">${c.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+        <div><div style="font-size:12px;font-weight:700">${c.name}</div>
+        <div style="font-size:9px;margin-top:1px;color:${c.active?'var(--green)':'var(--muted)'}">${c.active?'● Active':'○ Inactive'}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px">
+        ${[['Total',leads.length,'var(--white)'],['Assessed',done,'var(--gold)'],['Paid',paid,'var(--green)']].map(([l,v,col])=>`
+        <div style="text-align:center;background:rgba(255,255,255,.03);border-radius:7px;padding:8px">
+          <div style="font-size:18px;font-weight:800;font-family:'Syne',sans-serif;color:${col}">${v}</div>
+          <div style="font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">${l}</div>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:10px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:3px">
+        <span>Load: ${pct}%</span><span>Conversion: ${conv}%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pct>80?'var(--red)':pct>50?'var(--orange)':c.color}"></div></div>
+      <div style="margin-top:10px;font-size:10px;color:var(--muted)">📍 ${c.regions}<br>📌 ${c.sources}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══ DUPLICATES ══
+function renderDuplicates(){
+  var tb=document.getElementById('dup-tbody');
+  tb.innerHTML=DUPS.length?DUPS.map(d=>`<tr>
+    <td style="font-size:10px;color:var(--muted)">${d.ts}</td>
+    <td><div class="tname">${d.name}</div></td>
+    <td><span class="ttel">${d.smob}</span></td>
+    <td><span class="ttel">${d.pmob}</span></td>
+    <td style="font-size:10px;color:var(--muted2)">${d.email}</td>
+    <td><span class="tid">${d.eid}</span></td>
+    <td>${ccChip(d.counsellor)}</td>
+    <td><span class="badge ${d.status==='IGNORE'?'b-sent':'b-dup'}">${d.status}</span></td>
+  </tr>`).join(''):
+  '<tr><td colspan="8" class="empty"><div class="ei">✅</div><div class="et">No duplicates</div></td></tr>';
+}
+
+// ══ EVENTS ══
+function renderEvents(){
+  var eg=document.getElementById('events-grid');
+  eg.innerHTML=EVENTS.map(e=>`
+    <div class="card" style="padding:16px">
+      <div style="font-size:11px;font-weight:800;margin-bottom:4px">${e.name}</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:10px">${e.city} · ${e.date}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span class="badge b-new">${e.type}</span>
+        <span style="font-size:12px;font-weight:700;color:var(--gold)">${e.leads} leads</span>
+      </div>
+    </div>`).join('');
+}
+
+// ══ LEAD MODAL ══
+var activeLead=null;
+function openLead(id){
+  activeLead=LEADS.find(l=>l.id===id);
+  if(!activeLead)return;
+  var a=ASSESSMENTS.find(x=>x.id===id);
+  document.getElementById('lm-title').textContent=id+' — '+activeLead.name;
+  document.getElementById('mtab-info').innerHTML=buildInfoTab(activeLead);
+  document.getElementById('mtab-assessment').innerHTML=buildAssTab(activeLead,a);
+  document.getElementById('mtab-notes').innerHTML=buildNotesTab(activeLead);
+  document.getElementById('mtab-actions').innerHTML=buildActionsTab(activeLead,a);
+  setMTab('info',document.querySelector('#lm-tabs .mt'));
+  document.getElementById('lead-modal').classList.add('open');
+}
+function setMTab(t,btn){
+  document.querySelectorAll('.mtab-content').forEach(x=>x.classList.remove('on'));
+  document.getElementById('mtab-'+t).classList.add('on');
+  document.querySelectorAll('#lm-tabs .mt').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+}
+
+function buildInfoTab(l){
+  return `
+    <div class="ds"><div class="dst">Personal Info</div>
+      <div class="field-row"><div><div class="fl">Student</div><div class="fv">${l.name}</div></div><div><div class="fl">Father</div><div class="fv">${l.father||'—'}</div></div></div>
+      <div class="field-row"><div><div class="fl">Student Mobile</div><div class="fv" style="font-family:'DM Mono',monospace">${l.smob||'—'}</div></div><div><div class="fl">Parent Mobile</div><div class="fv" style="font-family:'DM Mono',monospace">${l.pmob||'—'}</div></div></div>
+      <div class="field-row"><div><div class="fl">Email</div><div class="fv">${l.email||'—'}</div></div><div><div class="fl">Location</div><div class="fv">${l.city||'—'}, ${l.state||'—'}</div></div></div>
+    </div>
+    <div class="ds"><div class="dst">Academic</div>
+      <div class="field-row"><div><div class="fl">Qualification</div><div class="fv">${l.qual||'—'}</div></div><div><div class="fl">Stream</div><div class="fv">${l.stream||'—'}</div></div></div>
+      <div class="field-row"><div><div class="fl">Marks</div><div class="fv">${l.marks||'—'}</div></div><div><div class="fl">Budget</div><div class="fv">${l.budget||'—'}</div></div></div>
+      <div class="field-row"><div><div class="fl">Target Course</div><div class="fv">${l.course||l.cat||'—'}</div></div><div><div class="fl">Exam</div><div class="fv">${l.exam||'—'}</div></div></div>
+    </div>
+    <div class="ds"><div class="dst">Career Goals</div>
+      <div class="field-row full"><div><div class="fl">Goal</div><div class="fv">${l.goal||'—'}</div></div></div>
+      <div class="field-row full"><div><div class="fl">Confusion</div><div class="fv">${l.confusion||'—'}</div></div></div>
+    </div>
+    <div class="ds"><div class="dst">CRM</div>
+      <div class="field-row"><div><div class="fl">Source</div><div class="fv">${l.source||'—'} · ${l.sdet||''}</div></div><div><div class="fl">Counsellor</div><div class="fv">${l.counsellor||'UNASSIGNED'}</div></div></div>
+      <div class="field-row"><div><div class="fl">Status</div><div>${sb(l.status)}</div></div><div><div class="fl">Date</div><div class="fv">${l.ts||'—'}</div></div></div>
+    </div>`;
+}
+
+function buildAssTab(l,a){
+  if(!a) return '<div class="empty"><div class="ei">🧠</div><div class="et">Assessment not completed</div><div class="es">Student needs to complete Form 2</div></div>';
+  return `
+    <div style="margin-bottom:14px">${rlBadge(a.rl)}</div>
+    ${DK.map((k,i)=>`<div class="score-row">
+      <div class="sn">${DN[i]}</div>
+      <div class="st"><div class="sf" style="width:${Math.round(a[k]/7*100)}%;background:${SC[i]}"></div></div>
+      <div class="sv" style="color:${SC[i]}">${Number(a[k]).toFixed(1)}</div>
+      <div style="font-size:9px;color:var(--muted);width:60px;text-align:right">/7 · ${Math.round(a[k]/7*100)}%</div>
+    </div>`).join('')}
+    <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      ${[['Primary',a.c1,'var(--cyan)'],['Secondary',a.c2,'var(--muted2)'],['Emerging',a.c3||'—','var(--muted)']].map(([t,v,col])=>`
+      <div style="background:rgba(255,255,255,.03);border-radius:7px;padding:10px">
+        <div style="font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px">${t}</div>
+        <div style="font-size:11px;font-weight:700;color:${col}">${v}</div>
+      </div>`).join('')}
+    </div>
+    <div style="margin-top:10px;padding:10px 12px;background:rgba(200,168,75,.05);border:1px solid var(--gb);border-radius:8px;font-size:11px;color:var(--muted2)">
+      Readiness: <strong style="color:var(--gold)">${Number(a.r).toFixed(2)}/7</strong> &nbsp;|&nbsp;
+      Foundation: <strong style="color:var(--green)">${Number(a.f).toFixed(2)}/7</strong> &nbsp;|&nbsp;
+      Stage: <strong>${a.stage}</strong>
+    </div>`;
+}
+
+function buildNotesTab(l){
+  var ns=notes[l.id]||[];
+  return `
+    <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:10px">${ns.length} notes</div>
+    ${ns.length?ns.map(n=>`<div class="note-item">
+      <div class="note-dot" style="background:${n.type==='action'?'var(--green)':n.type==='concern'?'var(--red)':'var(--gold)'}"></div>
+      <div><div class="note-text">${n.text}</div><div class="note-meta">${n.by} · ${n.ts}</div></div>
+    </div>`).join(''):'<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px">No notes yet. Add first note below.</div>'}
+    <div class="note-input-wrap">
+      <textarea class="note-input" id="note-input-${l.id}" rows="2" placeholder="Add note, follow-up, or action…"></textarea>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <button class="ab ab-note" style="padding:5px 8px;font-size:10px" onclick="addNote('${l.id}','action')">✓ Action</button>
+        <button class="ab ab-view" style="padding:5px 8px;font-size:10px" onclick="addNote('${l.id}','note')">📝 Note</button>
+      </div>
+    </div>`;
+}
+
+function buildActionsTab(l,a){
+  return `
+    <div class="ds"><div class="dst">Quick Actions</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <button class="btn-sec" onclick="openWA('${l.smob}','${l.name}')">💬 WhatsApp Student</button>
+        <button class="btn-sec" onclick="openWA('${l.pmob}','${l.name} ke Parents')">📞 WhatsApp Parent</button>
+        ${a?`<button class="btn-sec" onclick="copyReportLink('${l.id}')" style="font-size:11px">📋 Copy Link</button>
+        <button class="btn-primary" onclick="generateRpt('${l.id}');closeModal('lead-modal')">📄 Generate Report</button>`:'<button class="btn-sec" disabled style="opacity:.4">📄 No Assessment Yet</button>'}
+        <button class="btn-sec" onclick="markPaid('${l.id}')">✅ Mark Paid</button>
+      </div>
+    </div>
+    <div class="ds"><div class="dst">Update Status & Counsellor</div>
+      <div class="field-row">
+        <div>
+          <div class="fl">Status</div>
+          <select class="qa-select" style="width:100%;margin-top:4px;padding:8px;font-size:11px" onchange="updateStatus('${l.id}',this.value)">
+            ${['NEW','HOT','WARM','FOLLOW-UP','ASSESSMENT DONE','PAID','CLOSED'].map(s=>`<option ${l.status===s?'selected':''} value="${s}">${s}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <div class="fl">Counsellor</div>
+          <select class="qa-select" style="width:100%;margin-top:4px;padding:8px;font-size:11px" onchange="updateCounsellor('${l.id}',this.value)">
+            ${COUNSELLORS_DATA.map(c=>`<option ${l.counsellor===c.name?'selected':''} value="${c.name}">${c.name.split(' ')[0]}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div>
+        <div class="fl">Set Follow-up Date</div>
+        <input type="date" id="fu-date-${l.id}" style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--white);padding:7px 10px;border-radius:6px;font-size:11px;font-family:inherit;outline:none;margin-top:4px">
+        <button class="btn-sec" style="margin-top:6px;width:100%;font-size:11px" onclick="setFollowUp('${l.id}')">📅 Set Follow-up</button>
+      </div>
+    </div>
+    <div class="ds"><div class="dst">Package</div>
+      <select class="qa-select" style="width:100%;padding:8px;font-size:11px;margin-top:2px" onchange="updatePkg('${l.id}',this.value)">
+        <option value="">Select Package</option>
+        <option value="149" ${l.pkg==='₹149'?'selected':''}>₹149 — Report Only</option>
+        <option value="249" ${l.pkg==='₹249'?'selected':''}>₹249 — Report + Counselling</option>
+        <option value="399" ${l.pkg==='₹399'?'selected':''}>₹399 — Premium Package</option>
+      </select>
+    </div>`;
+}
+
+// ══ HELPERS ══
+function sb(s){
+  var m={'NEW':'b-new','HOT':'b-hot','WARM':'b-warm','FOLLOW-UP':'b-warm','ASSESSMENT DONE':'b-done','PAID':'b-paid','SENT':'b-sent'};
+  return `<span class="badge ${m[s]||'b-na'}">${s||'NEW'}</span>`;
+}
+function rlBadge(r){
+  var m={'High Readiness':'b-paid','Medium Readiness':'b-warm','Low Readiness':'b-hot'};
+  return `<span class="badge ${m[r]||'b-na'}">${r||'—'}</span>`;
+}
+function ccChip(c){
+  if(!c||c==='UNASSIGNED') return '<span class="cc" style="color:var(--muted)">—</span>';
+  var col={'SAKET RANJAN':'#00d4ff','SYED ZAHEER ABBAS':'#7c3aed','MOHAMMAD MERAJ':'#c8a84b','PURNIMA SINGH':'#10b981'};
+  var short=c.split(' ')[0];
+  return `<span class="cc" style="color:${col[c]||'var(--muted2)'};border-color:${col[c]||'var(--border)'}33">${short}</span>`;
+}
+function hotScore(l){
+  var score=0;
+  if(l.status==='HOT') score=90;
+  else if(l.source==='Referral') score=75;
+  else if(l.source==='Coaching') score=60;
+  else if(l.status==='FOLLOW-UP') score=55;
+  else score=30;
+  var cls=score>=70?'hot-high':score>=50?'hot-med':'hot-low';
+  return `<span class="hot-score ${cls}">🔥${score}</span>`;
+}
+
+// ══ ACTIONS ══
+function updateStatus(id,val){
+  var l=LEADS.find(x=>x.id===id);if(!l)return;
+  l.status=val;
+  renderLeads();renderKanban();renderDashboard();
+  notif('✅ '+id+' → '+val);
+  pushToSheet('update_status',{id,status:val});
+}
+function updateCounsellor(id,val){
+  var l=LEADS.find(x=>x.id===id);if(!l)return;
+  l.counsellor=val;notif('👤 Counsellor updated: '+val);
+  pushToSheet('update_counsellor',{id,counsellor:val});
+}
+function updatePkg(id,val){
+  var l=LEADS.find(x=>x.id===id);if(!l)return;
+  l.pkg=val?'₹'+val:'';
+  if(val) l.status='PAID';
+  renderRevenue();renderReports();
+  notif('💰 Package: ₹'+val);
+  if(val) pushToSheet('update_package',{id,amount:val});
+}
+function markPaid(id){
+  var l=LEADS.find(x=>x.id===id);if(!l)return;
+  l.status='PAID';renderLeads();renderKanban();renderDashboard();
+  notif('✅ Marked paid: '+l.name);
+}
+function setFollowUp(id){
+  var l=LEADS.find(x=>x.id===id);if(!l)return;
+  var d=document.getElementById('fu-date-'+id);
+  if(!d||!d.value){notif('⚠️ Select date first');return;}
+  l.next_fu=d.value;l.status='FOLLOW-UP';
+  renderFollowUps();renderDashboard();updateSideBadges();
+  notif('📅 Follow-up set: '+d.value);
+  pushToSheet('set_followup',{id,date:d.value});
+}
+function addNote(id,type){
+  var inp=document.getElementById('note-input-'+id);
+  if(!inp||!inp.value.trim()){notif('⚠️ Write something first');return;}
+  if(!notes[id]) notes[id]=[];
+  var by = currentUser?currentUser.name:'Admin';
+  var noteText = inp.value.trim();
+  notes[id].push({text:noteText,type,by,ts:new Date().toLocaleString('en-IN')});
+  inp.value='';
+  var l=LEADS.find(x=>x.id===id);
+  document.getElementById('mtab-notes').innerHTML=buildNotesTab(l);
+  notif('📝 Note added!');
+  pushToSheet('add_note',{id,note:noteText,by});
+}
+function openWA(mob,name){
+  if(!mob||mob==='—'){notif('⚠️ No mobile');return;}
+  var n=String(mob).replace(/\D/g,'');
+  window.open('https://wa.me/91'+n+'?text=Hi+'+encodeURIComponent(name)+',+INWANG+AI+Career+Guidance+se+bol+rahe+hain.+Kya+aap+free+hain?','_blank');
+}
+function generateRpt(id){
+  var l=LEADS.find(x=>x.id===id);
+  notif('📄 Opening report template for '+l.name+'…');
+  // Open report HTML with ID param
+  setTimeout(()=>{ window.open('inwang_intelligent_report.html?id='+id,'_blank'); },500);
+}
+function openAssDetail(id){
+  openLead(id);
+  setTimeout(()=>setMTab('assessment',document.querySelectorAll('#lm-tabs .mt')[1]),100);
+}
+
+// ══ SEARCH ══
+function globalSearch(q){
+  if(!q.trim()){renderLeads();return;}
+  q=q.toLowerCase();
+  var found=LEADS.filter(l=>
+    (l.name&&l.name.toLowerCase().includes(q))||
+    (l.id&&l.id.toLowerCase().includes(q))||
+    (l.smob&&l.smob.includes(q))||
+    (l.city&&l.city.toLowerCase().includes(q))||
+    (l.qual&&l.qual.toLowerCase().includes(q))
+  );
+  var tb=document.getElementById('leads-tbody');
+  if(!found.length){tb.innerHTML='<tr><td colspan="9" class="empty"><div class="ei">🔍</div><div class="et">No results for "'+q+'"</div></td></tr>';return;}
+  tb.innerHTML=found.map(l=>`<tr>
+    <td><span class="tid">${l.id}</span></td>
+    <td><div class="tname">${l.name}</div><div class="tsub">${l.city}, ${l.state}</div></td>
+    <td><span class="ttel">${l.smob}</span></td>
+    <td style="font-size:11px">${l.qual}</td>
+    <td style="font-size:11px">${l.source}</td>
+    <td>${ccChip(l.counsellor)}</td>
+    <td>${hotScore(l)}</td>
+    <td>${sb(l.status)}</td>
+    <td><button class="ab ab-view" onclick="openLead('${l.id}')">👁</button></td>
+  </tr>`).join('');
+  nav('leads',null);
+}
+
+// ══ EXPORT ══
+function exportCSV(){
+  var rows=[['ID','Name','Mobile','Qualification','Stream','Source','Counsellor','Status','Package']];
+  LEADS.forEach(l=>rows.push([l.id,l.name,l.smob,l.qual,l.stream,l.source,l.counsellor,l.status,l.pkg||'']));
+  var csv=rows.map(r=>r.map(c=>'"'+(String(c||'').replace(/"/g,'""'))+'"').join(',')).join('\n');
+  var a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='INWANG_CRM_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  notif('⬇ CSV exported!');
+}
+
+// ══ MODAL ══
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// ══ SYNC ══
+function syncData(){
+  if(!CFG.webapp){notif('⚠️ Add Web App URL in Settings for live data.');return;}
+  notif('🔄 Syncing from Google Sheets…');
+  // Use ?action=all to get everything in one call
+  fetch(CFG.webapp+'?action=all')
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.leads && d.leads.length){
+        LEADS = d.leads;
+        notif('✅ Synced: '+d.leads.length+' leads');
+      }
+      if(d.assessments && d.assessments.length){
+        ASSESSMENTS = d.assessments;
+      }
+      if(d.duplicates && d.duplicates.length){
+        DUPS = d.duplicates;
+      }
+      // Re-render everything
+      renderDashboard();
+      renderLeads();
+      renderKanban();
+      renderAssessments();
+      renderReports();
+      renderDuplicates();
+      updateSideBadges();
+      populateFilters();
+    })
+    .catch(e=>{
+      notif('⚠️ Sync failed — Check Web App URL & deployment');
+      console.error(e);
+    });
+}
+
+// Write back to Sheet (POST)
+function pushToSheet(action, payload){
+  if(!CFG.webapp) return;
+  fetch(CFG.webapp, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({action, ...payload})
+  }).then(r=>r.json()).then(d=>{
+    if(d.success) notif('✅ Saved to Sheet!');
+    else notif('⚠️ Sheet update: '+(d.error||'failed'));
+  }).catch(()=>notif('⚠️ Could not save to Sheet'));
+}
+
+// ══ SETTINGS ══
+function saveSettings(){
+  var w=document.getElementById('set-webapp').value.trim();
+  var c=document.getElementById('set-counsellor').value.trim();
+  // Load saved values
+  var si=document.getElementById('set-webapp');var sc=document.getElementById('set-counsellor');if(si&&localStorage.getItem('crm_webapp'))si.value=localStorage.getItem('crm_webapp');if(sc&&localStorage.getItem('crm_counsellor'))sc.value=localStorage.getItem('crm_counsellor');
+  if(w){localStorage.setItem('crm_webapp',w);CFG.webapp=w;}
+  if(c){localStorage.setItem('crm_counsellor',c);CFG.counsellor=c;}
+  notif('✅ Settings saved! Testing connection…');
+  if(w){
+    fetch(w+'?action=dashboard')
+      .then(r=>r.json())
+      .then(d=>{
+        if(d.summary) notif('✅ Connected! '+d.summary.total+' leads found in Sheet.');
+        else notif('⚠️ Connected but no data. Check sheet names.');
+        syncData();
+      })
+      .catch(()=>notif('⚠️ Connection failed. Check URL and deployment settings.'));
+  }
+}
+
+// ══ NOTIF ══
+
+// ══ CHANGE PASSWORD ══
+function changePassword(){
+  var cur = document.getElementById('pw-current').value;
+  var nw  = document.getElementById('pw-new').value;
+  var con = document.getElementById('pw-confirm').value;
+  var msg = document.getElementById('pw-msg');
+
+  if(!cur||!nw||!con){ msg.style.color='var(--red)'; msg.textContent='Sab fields bharo.'; return; }
+
+  // Find current user in USERS
+  var user = USERS.find(u=>u.username===currentUser.username);
+  if(!user){ msg.style.color='var(--red)'; msg.textContent='User not found.'; return; }
+
+  if(user.password !== cur){ msg.style.color='var(--red)'; msg.textContent='Current password galat hai.'; return; }
+  if(nw.length < 6){ msg.style.color='var(--red)'; msg.textContent='Password minimum 6 characters hona chahiye.'; return; }
+  if(nw !== con){ msg.style.color='var(--red)'; msg.textContent='New passwords match nahi kar rahe.'; return; }
+
+  // Update password
+  user.password = nw;
+  // Save to localStorage
+  var savedUsers = JSON.parse(localStorage.getItem('crm_users')||'{}');
+  savedUsers[user.username] = nw;
+  localStorage.setItem('crm_users', JSON.stringify(savedUsers));
+
+  msg.style.color='var(--green)';
+  msg.textContent='✅ Password successfully change ho gaya!';
+  document.getElementById('pw-current').value='';
+  document.getElementById('pw-new').value='';
+  document.getElementById('pw-confirm').value='';
+  notif('🔑 Password updated!');
+}
+
+// ══ LOAD SAVED PASSWORDS ON START ══
+function loadSavedPasswords(){
+  var saved = JSON.parse(localStorage.getItem('crm_users')||'{}');
+  Object.keys(saved).forEach(function(uname){
+    var u = USERS.find(x=>x.username===uname);
+    if(u) u.password = saved[uname];
+  });
+}
+
+// ══ MANAGE COUNSELLORS ══
+function showAddCounsellor(){
+  var f = document.getElementById('add-counsellor-form');
+  f.style.display = f.style.display==='none'?'block':'none';
+}
+
+function renderCounsellorList(){
+  var el = document.getElementById('counsellor-list');
+  if(!el) return;
+  el.innerHTML = USERS.map(function(u){
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">'
+      +'<div style="display:flex;align-items:center;gap:10px">'
+      +'<div style="width:32px;height:32px;border-radius:8px;background:var(--gd);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gold)">'+u.initials+'</div>'
+      +'<div><div style="font-size:12px;font-weight:700">'+u.name+'</div>'
+      +'<div style="font-size:10px;color:var(--muted)">@'+u.username+' · '+u.role+'</div></div></div>'
+      +'<div style="display:flex;gap:6px">'
+      +(u.username!=='admin'&&u.username!=='meraj'
+        ?'<button class="ab ab-note" onclick="removeCounsellor(\"'+u.username+'\")" style="font-size:9px">Remove</button>'
+        :'<span style="font-size:10px;color:var(--gold)">Admin</span>')
+      +'</div></div>';
+  }).join('');
+}
+
+function addCounsellor(){
+  var name = document.getElementById('nc-name').value.trim();
+  var user = document.getElementById('nc-user').value.trim().toLowerCase();
+  var pass = document.getElementById('nc-pass').value.trim();
+  var role = document.getElementById('nc-role').value.trim();
+
+  if(!name||!user||!pass){ notif('⚠️ Sab fields bharo'); return; }
+  if(USERS.find(u=>u.username===user)){ notif('⚠️ Username already exists'); return; }
+
+  var initials = name.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);
+  var newUser = {
+    username: user,
+    password: pass,
+    name: name,
+    role: role||'Counsellor',
+    initials: initials,
+    counsellor: name.toUpperCase()
+  };
+  USERS.push(newUser);
+
+  // Save to localStorage
+  var saved = JSON.parse(localStorage.getItem('crm_extra_users')||'[]');
+  saved.push(newUser);
+  localStorage.setItem('crm_extra_users', JSON.stringify(saved));
+
+  // Clear form
+  document.getElementById('nc-name').value='';
+  document.getElementById('nc-user').value='';
+  document.getElementById('nc-pass').value='';
+  document.getElementById('nc-role').value='';
+  document.getElementById('add-counsellor-form').style.display='none';
+
+  renderCounsellorList();
+  notif('✅ Counsellor added: '+name);
+}
+
+function removeCounsellor(uname){
+  if(!confirm('Remove this counsellor?')) return;
+  var idx = USERS.findIndex(u=>u.username===uname);
+  if(idx>-1) USERS.splice(idx,1);
+
+  var saved = JSON.parse(localStorage.getItem('crm_extra_users')||'[]');
+  saved = saved.filter(function(u){return u.username!==uname;});
+  localStorage.setItem('crm_extra_users', JSON.stringify(saved));
+
+  renderCounsellorList();
+  notif('🗑 Counsellor removed');
+}
+
+function loadExtraCounsellors(){
+  var saved = JSON.parse(localStorage.getItem('crm_extra_users')||'[]');
+  saved.forEach(function(u){
+    if(!USERS.find(x=>x.username===u.username)) USERS.push(u);
+  });
+}
+
+// ══ NOTIFICATIONS — New Lead Alert ══
+function checkNewLeads(){
+  var lastCount = parseInt(localStorage.getItem('crm_last_lead_count')||'0');
+  var currentCount = LEADS.length;
+
+  if(lastCount > 0 && currentCount > lastCount){
+    var newCount = currentCount - lastCount;
+    var newLeads = LEADS.slice(-newCount);
+
+    // Sound alert
+    var soundOn = localStorage.getItem('notif_sound')==='true';
+    if(soundOn) playAlertSound();
+
+    // WhatsApp alert to admin
+    var waOn = localStorage.getItem('notif_wa')==='true';
+    var isAdminCheck = currentUser && (currentUser.username==='admin'||currentUser.username==='meraj');
+    if(waOn && isAdminCheck){
+      var num = (localStorage.getItem('notif_number')||'9470659224').replace(/\D/g,'');
+      var msg = '🔔 INWANG CRM: '+newCount+' naya lead aaya!\n';
+      newLeads.forEach(function(l){ msg += '\n• '+l.name+' ('+l.source+') — '+l.city; });
+      window.open('https://wa.me/91'+num+'?text='+encodeURIComponent(msg),'_blank');
+    }
+
+    notif('🔔 '+newCount+' naya lead aaya!');
+  }
+  localStorage.setItem('crm_last_lead_count', currentCount);
+}
+
+function playAlertSound(){
+  try{
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.setValueAtTime(660, ctx.currentTime+0.1);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3);
+    osc.start(); osc.stop(ctx.currentTime+0.3);
+  }catch(e){}
+}
+
+function saveNotifSettings(){
+  var waOn    = document.getElementById('notif-wa');
+  var soundOn = document.getElementById('notif-sound');
+  var num     = document.getElementById('notif-number');
+  if(waOn)    localStorage.setItem('notif_wa',    waOn.checked);
+  if(soundOn) localStorage.setItem('notif_sound', soundOn.checked);
+  if(num)     localStorage.setItem('notif_number', num.value.replace(/\D/g,''));
+  notif('🔔 Notification settings saved!');
+  updateToggleUI();
+}
+
+function updateToggleUI(){
+  var waOn    = localStorage.getItem('notif_wa')==='true';
+  var soundOn = localStorage.getItem('notif_sound')==='true';
+  var waEl    = document.getElementById('notif-wa');
+  var soundEl = document.getElementById('notif-sound');
+  if(waEl)    waEl.checked    = waOn;
+  if(soundEl) soundEl.checked = soundOn;
+  // Update slider colors
+  ['wa','sound'].forEach(function(t){
+    var slider = document.getElementById('notif-'+t+'-slider');
+    var knob   = document.getElementById('notif-'+t+'-knob');
+    var on = t==='wa'?waOn:soundOn;
+    if(slider) slider.style.background = on?'rgba(16,185,129,.3)':'rgba(255,255,255,.1)';
+    if(knob)   { knob.style.background=on?'var(--green)':'var(--muted)'; knob.style.left=on?'23px':'3px'; }
+  });
+}
+
+
+// ══════════════════════════════════════
+// FEATURE: Lead Age Indicator
+// ══════════════════════════════════════
+function leadAge(ts){
+  if(!ts) return '';
+  var d = new Date(ts);
+  if(isNaN(d)) return '';
+  var days = Math.floor((new Date()-d)/(1000*60*60*24));
+  if(days===0) return '<span style="color:var(--green);font-weight:700">Today</span>';
+  if(days<=3)  return '<span style="color:var(--green)">'+days+'d ago</span>';
+  if(days<=7)  return '<span style="color:var(--gold)">'+days+'d ago</span>';
+  if(days<=30) return '<span style="color:var(--orange)">'+days+'d ago</span>';
+  return '<span style="color:var(--red)">'+days+'d ago</span>';
+}
+
+// ══════════════════════════════════════
+// FEATURE: Assessment Search/Filter
+// ══════════════════════════════════════
+var allAssessments = [];
+var _origRenderAss = null;
+
+// ══════════════════════════════════════
+// FEATURE: Bulk Status Update
+// ══════════════════════════════════════
+function toggleSelectAll(cb){
+  document.querySelectorAll('.lead-cb').forEach(function(el){ el.checked = cb.checked; });
+}
+
+function bulkStatusUpdate(){
+  var status = document.getElementById('bulk-status-sel').value;
+  if(!status){ notif('⚠️ Status select karo pehle'); return; }
+  var checked = Array.from(document.querySelectorAll('.lead-cb:checked')).map(function(el){ return el.value; });
+  if(!checked.length){ notif('⚠️ Koi lead select nahi kiya'); return; }
+  checked.forEach(function(id){
+    var l = LEADS.find(function(x){ return x.id===id; });
+    if(l){ l.status=status; pushToSheet('update_status',{id:id,status:status}); }
+  });
+  renderLeads(); renderKanban(); renderDashboard();
+  logActivity('Bulk update', checked.length+' leads → '+status);
+  notif('✅ '+checked.length+' leads updated → '+status);
+  document.getElementById('select-all').checked=false;
+}
+
+// ══════════════════════════════════════
+// FEATURE: WhatsApp Template Messages
+// ══════════════════════════════════════
+var WA_TEMPLATES = [
+  {
+    name: '👋 Welcome Message',
+    icon: '👋',
+    color: 'var(--green)',
+    msg: function(l){ return 'Namaste '+l.name+'! 🙏\n\nHum INWANG AI Career Guidance se baat kar rahe hain.\n\nAapne hamse career guidance ke liye contact kiya tha. Kya hum aapki help kar sakte hain?\n\n📞 Koi bhi sawaal ho toh zaroor poochhen.\n\n— INWANG AI Team\n+91 9470659224'; }
+  },
+  {
+    name: '📋 Assessment Link',
+    icon: '📋',
+    color: 'var(--gold)',
+    msg: function(l){ return 'Namaste '+l.name+'! 🙏\n\nAapka INWANG ID taiyaar hai. Career Assessment complete karne ke liye neeche click karein:\n\n🔗 https://docs.google.com/forms/d/e/1FAIpQLSdeaxABVMzr-5by1eWZYpTmt2zCkC4DyOahlo_kSWWQHXB5vA/viewform\n\nAssessment mein lagbhag 10-15 minute lagte hain.\n\nAapki poori report 48 ghante mein taiyaar ho jayegi.\n\n— INWANG AI Team'; }
+  },
+  {
+    name: '📄 Report Ready',
+    icon: '📄',
+    color: 'var(--cyan)',
+    msg: function(l){ return 'Namaste '+l.name+'! 🎉\n\nAapki INWANG AI Career Intelligence Report taiyaar hai!\n\n✅ 6D Career Assessment Complete\n✅ Career Clusters Identified\n✅ Personalized Roadmap Ready\n\nReport dekhne ke liye humse contact karein.\n\nCounselling ke liye: +91 9470659224\n\n— INWANG AI Team'; }
+  },
+  {
+    name: '📅 Follow-up Reminder',
+    icon: '📅',
+    color: 'var(--orange)',
+    msg: function(l){ return 'Namaste '+l.name+'! 🙏\n\nHum INWANG AI se baat kar rahe hain.\n\nAapke career guidance ke baare mein ek baar baat karni thi. Kya aap available hain?\n\nHamara number: +91 9470659224\n\nAapka samay bahut important hai — hum aapke career mein sahi direction de sakte hain! 🎯\n\n— INWANG AI Team'; }
+  },
+  {
+    name: '💰 Payment Link',
+    icon: '💰',
+    color: 'var(--green)',
+    msg: function(l){ return 'Namaste '+l.name+'! 🙏\n\nAapki INWANG AI Career Report ke liye payment ka link:\n\n💳 ₹149 — Basic Report\n💳 ₹249 — Report + Counselling Session\n💳 ₹399 — Premium Package\n\nPayment ke baad 24 ghante mein report mil jayegi.\n\nKoi sawaal ho toh call karein: +91 9470659224\n\n— INWANG AI Team'; }
+  },
+  {
+    name: '🎓 Admission Season',
+    icon: '🎓',
+    color: 'var(--purple)',
+    msg: function(l){ return 'Namaste '+l.name+'! 🙏\n\nAdmission season shuru ho gaya hai! ⏰\n\nAbhi sahi career guidance lena bahut zaroori hai.\n\n🎯 INWANG AI Career Assessment se:\n• Sahi course identify hoga\n• Sahi college select hoga\n• Career roadmap milega\n\nAaj hi book karein: +91 9470659224\n\n— INWANG AI Team'; }
+  },
+];
+
+function openWAMenu(leadId){
+  var l = LEADS.find(function(x){ return x.id===leadId; });
+  if(!l) return;
+  var body = document.getElementById('wa-modal-body');
+  body.innerHTML = '';
+  var hdr = document.createElement('div');
+  hdr.style.cssText = 'margin-bottom:14px;font-size:12px;font-weight:700;color:var(--muted2)';
+  hdr.textContent = 'Student: '+l.name+' · '+l.smob;
+  body.appendChild(hdr);
+  WA_TEMPLATES.forEach(function(t,i){
+    var card = document.createElement('div');
+    card.style.cssText = 'background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:8px;cursor:pointer;transition:all .2s';
+    card.innerHTML = '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'
+      +'<span style="font-size:16px">'+t.icon+'</span>'
+      +'<span style="font-size:12px;font-weight:700;color:'+t.color+'">'+t.name+'</span></div>'
+      +'<div style="font-size:10px;color:var(--muted);line-height:1.6">'
+      +t.msg(l).replace(/\n/g,'<br>').substring(0,120)+'…</div>';
+    card.addEventListener('mouseover',function(){ card.style.borderColor=t.color; });
+    card.addEventListener('mouseout', function(){ card.style.borderColor='var(--border)'; });
+    card.addEventListener('click',    function(){ sendWATemplate(i,leadId); });
+    body.appendChild(card);
+  });
+  document.getElementById('wa-modal').classList.add('open');
+}
+
+function sendWATemplate(idx, leadId){
+  var l = LEADS.find(function(x){ return x.id===leadId; });
+  if(!l) return;
+  var mob = (l.smob||'').replace(/\D/g,'');
+  if(!mob){ notif('⚠️ Mobile number nahi hai'); return; }
+  var msg = WA_TEMPLATES[idx].msg(l);
+  window.open('https://wa.me/91'+mob+'?text='+encodeURIComponent(msg),'_blank');
+  logActivity('WhatsApp sent', WA_TEMPLATES[idx].name+' → '+l.name);
+  closeModal('wa-modal');
+  notif('💬 WhatsApp opened: '+WA_TEMPLATES[idx].name);
+}
+
+// ══════════════════════════════════════
+// FEATURE: Activity Log
+// ══════════════════════════════════════
+var ACTIVITY_LOG = JSON.parse(localStorage.getItem('crm_activity')||'[]');
+
+function logActivity(type, detail){
+  var entry = {
+    type: type,
+    detail: detail,
+    by: currentUser ? currentUser.name : 'System',
+    ts: new Date().toLocaleString('en-IN')
+  };
+  ACTIVITY_LOG.unshift(entry);
+  if(ACTIVITY_LOG.length > 200) ACTIVITY_LOG = ACTIVITY_LOG.slice(0,200);
+  localStorage.setItem('crm_activity', JSON.stringify(ACTIVITY_LOG));
+  renderActivityLog();
+}
+
+function renderActivityLog(){
+  var el = document.getElementById('activity-log-list');
+  if(!el) return;
+  document.getElementById('activity-count').textContent = ACTIVITY_LOG.length+' activities';
+  if(!ACTIVITY_LOG.length){
+    el.innerHTML='<div class="empty"><div class="ei">📋</div><div class="et">No activities yet</div></div>';
+    return;
+  }
+  var icons = {'Lead Updated':'✏️','Bulk update':'📦','WhatsApp sent':'💬','Status Changed':'🔄','Note Added':'📝','Login':'🔐','Sync':'🔄','Import':'📥'};
+  el.innerHTML = ACTIVITY_LOG.map(function(a){
+    var ic = icons[a.type]||'📋';
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 18px;border-bottom:1px solid var(--border)">'
+      +'<span style="font-size:14px;flex-shrink:0;margin-top:1px">'+ic+'</span>'
+      +'<div style="flex:1">'
+      +'<div style="font-size:12px;font-weight:600">'+a.type+'</div>'
+      +'<div style="font-size:11px;color:var(--muted2);margin-top:1px">'+a.detail+'</div>'
+      +'</div>'
+      +'<div style="text-align:right;flex-shrink:0">'
+      +'<div style="font-size:9px;color:var(--muted);font-family:monospace">'+a.ts+'</div>'
+      +'<div style="font-size:9px;color:var(--muted2);margin-top:1px">'+a.by+'</div>'
+      +'</div></div>';
+  }).join('');
+}
+
+function clearActivity(){
+  if(!confirm('Activity log clear karna hai?')) return;
+  ACTIVITY_LOG = [];
+  localStorage.setItem('crm_activity','[]');
+  renderActivityLog();
+  notif('🗑 Activity log cleared');
+}
+
+// ══════════════════════════════════════
+// FEATURE: Student Portal Link Copy
+// ══════════════════════════════════════
+function copyReportLink(leadId){
+  var link = window.location.origin+'/report.html?id='+leadId+'&paid=true';
+  navigator.clipboard.writeText(link).then(function(){
+    notif('📋 Report link copied: '+link);
+    logActivity('Report link copied', leadId);
+  }).catch(function(){
+    // Fallback
+    var ta = document.createElement('textarea');
+    ta.value = link; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    notif('📋 Report link copied!');
+  });
+}
+
+function generateRpt(id){
+  var l = LEADS.find(function(x){ return x.id===id; });
+  if(!l) return;
+  logActivity('Report generated', l.name+' ('+id+')');
+  notif('📄 Opening report for '+l.name);
+  setTimeout(function(){ window.open('report.html?id='+id+'&paid=true','_blank'); }, 300);
+}
+
+// ══════════════════════════════════════
+// FEATURE: CSV Import
+// ══════════════════════════════════════
+var csvImportData = [];
+
+function handleCSVDrop(e){
+  e.preventDefault();
+  var file = e.dataTransfer.files[0];
+  if(file) parseCSVFile(file);
+  document.getElementById('csv-drop-zone').style.borderColor='var(--border)';
+}
+
+function handleCSVFile(input){
+  if(input.files[0]) parseCSVFile(input.files[0]);
+}
+
+function parseCSVFile(file){
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var text = e.target.result;
+    var lines = text.split('\n').filter(function(l){ return l.trim(); });
+    if(lines.length < 2){ notif('⚠️ File mein data nahi hai'); return; }
+    
+    var headers = lines[0].split(',').map(function(h){ return h.trim(); });
+    csvImportData = [];
+    
+    for(var i=1; i<lines.length; i++){
+      var vals = lines[i].split(',').map(function(v){ return v.trim().replace(/^"|"$/g,''); });
+      var row = {};
+      headers.forEach(function(h,j){ row[h] = vals[j]||''; });
+      if(row.Name||row.name) csvImportData.push(row);
+    }
+    
+    // Show preview
+    var prev = document.getElementById('csv-preview');
+    var tbl  = document.getElementById('csv-preview-table');
+    document.getElementById('csv-preview-title').textContent = csvImportData.length+' leads found — Preview (first 5):';
+    
+    var previewRows = csvImportData.slice(0,5);
+    tbl.innerHTML = '<thead><tr>'+headers.map(function(h){ return '<th>'+h+'</th>'; }).join('')+'</tr></thead>'
+      +'<tbody>'+previewRows.map(function(r){
+        return '<tr>'+headers.map(function(h){ return '<td style="font-size:11px">'+( r[h]||'—')+'</td>'; }).join('')+'</tr>';
+      }).join('')+'</tbody>';
+    prev.style.display='block';
+    notif('📂 '+csvImportData.length+' leads ready to import');
+  };
+  reader.readAsText(file);
+}
+
+function importCSVLeads(){
+  if(!csvImportData.length){ notif('⚠️ Koi data nahi'); return; }
+  var imported = 0;
+  var today = new Date().toLocaleDateString('en-IN');
+  
+  csvImportData.forEach(function(row){
+    var name = row.Name||row.name||'';
+    var mob  = (row.Mobile||row.mobile||row.Phone||'').replace(/\D/g,'');
+    if(!name) return;
+    
+    // Check duplicate
+    if(mob && LEADS.find(function(l){ return (l.smob||'').replace(/\D/g,'')=== mob; })) return;
+    
+    var newLead = {
+      id: 'IMP-'+Date.now()+'-'+imported,
+      name: name,
+      father: '',
+      pmob: row['Parent Mobile']||'',
+      smob: mob,
+      email: row.Email||row.email||'',
+      city: row.City||row.city||'',
+      state: row.State||row.state||'Bihar',
+      qual: row.Qualification||row.qualification||'',
+      stream: row.Stream||row.stream||'',
+      marks: row.Marks||row.marks||'',
+      cat: '',
+      course: '',
+      goal: '',
+      confusion: '',
+      source: row.Source||row.source||'Import',
+      sdet: file ? file.name : 'CSV Import',
+      counsellor: 'UNASSIGNED',
+      status: 'NEW',
+      pkg: '',
+      ts: today,
+      notes: []
+    };
+    LEADS.push(newLead);
+    imported++;
+  });
+  
+  renderLeads(); renderDashboard(); updateSideBadges();
+  logActivity('CSV Import', imported+' leads imported');
+  notif('✅ '+imported+' leads imported!');
+  document.getElementById('csv-preview').style.display='none';
+  csvImportData=[];
+}
+
+// ══════════════════════════════════════
+// FEATURE: Daily Summary WhatsApp
+// ══════════════════════════════════════
+function sendDailySummary(){
+  var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  var total    = LEADS.length;
+  var newToday = LEADS.filter(function(l){ return l.ts && new Date(l.ts).toDateString()===new Date().toDateString(); }).length;
+  var assessed = LEADS.filter(function(l){ return l.status==='ASSESSMENT DONE'; }).length;
+  var paid     = LEADS.filter(function(l){ return l.status==='PAID'; }).length;
+  var fuToday  = LEADS.filter(function(l){ return l.next_fu && new Date(l.next_fu).toDateString()===new Date().toDateString(); }).length;
+  
+  var msg = '📊 *INWANG CRM — Daily Summary*\n'
+    +'📅 '+today+'\n\n'
+    +'👥 Total Leads: '+total+'\n'
+    +'🆕 Aaj ke naye leads: '+newToday+'\n'
+    +'🧠 Assessment Done: '+assessed+'\n'
+    +'✅ Paid/Enrolled: '+paid+'\n'
+    +'📅 Aaj ke follow-ups: '+fuToday+'\n\n'
+    +'— INWANG AI CRM';
+  
+  var num = (localStorage.getItem('notif_number')||'9470659224').replace(/\D/g,'');
+  window.open('https://wa.me/91'+num+'?text='+encodeURIComponent(msg),'_blank');
+  logActivity('Daily Summary sent', today);
+  notif('📊 Daily summary WhatsApp pe bheja!');
+}
+
+// ══════════════════════════════════════
+// OVERRIDE: Log status updates
+// ══════════════════════════════════════
+var _origUpdateStatus = updateStatus;
+updateStatus = function(id,val){
+  _origUpdateStatus(id,val);
+  logActivity('Status Changed', id+' → '+val);
+};
+
+var _origAddNote = addNote;
+addNote = function(id,type){
+  _origAddNote(id,type);
+  logActivity('Note Added', 'Lead: '+id);
+};
+
+// Patch renderAssessments to save data
+var _origRenderAssessments = renderAssessments;
+renderAssessments = function(){
+  allAssessments = [...ASSESSMENTS];
+  _origRenderAssessments();
+};
+
+function notif(msg){
+  var n=document.getElementById('notif');
+  n.textContent=msg;n.classList.add('show');
+  clearTimeout(n._t);
+  n._t=setTimeout(()=>n.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>
